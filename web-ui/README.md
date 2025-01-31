@@ -65,7 +65,7 @@ This fully specifies the agent set that was used in the interaction shown in the
 - You can select agent scenarios in the Scenario dropdown, and automatically switch to a specific agent with the Agent dropdown.
 - The conversation transcript is on the left, including tool calls, tool call responses, and agent changes. Click to expand non-message elements.
 - The event log is on the right, showing both client and server events. Click to see the full payload.
-- On the bottom, you can disconnect, toggle between automated voice-activity detection or PTT, turn off audio playback, and toggle logs.
+- On the bottom, you can disconnect, toggle between automated voice-activity detection or PTT, and toggle logs.
 
 ## Core Contributors
 - Noah MacCallum - [noahmacca](https://x.com/noahmacca)

@@ -10,8 +10,6 @@ interface BottomToolbarProps {
   handleTalkButtonUp: () => void;
   isEventsPaneExpanded: boolean;
   setIsEventsPaneExpanded: (val: boolean) => void;
-  isAudioPlaybackEnabled: boolean;
-  setIsAudioPlaybackEnabled: (val: boolean) => void;
 }
 
 function BottomToolbar({
@@ -22,9 +20,7 @@ function BottomToolbar({
   handleTalkButtonDown,
   handleTalkButtonUp,
   isEventsPaneExpanded,
-  setIsEventsPaneExpanded,
-  isAudioPlaybackEnabled,
-  setIsAudioPlaybackEnabled,
+  setIsEventsPaneExpanded
 }: BottomToolbarProps) {
 
   return (
@@ -55,20 +51,6 @@ function BottomToolbar({
         >
           Talk
         </button>
-      </div>
-
-      <div className="flex flex-row items-center gap-2">
-        <input
-          id="audio-playback"
-          type="checkbox"
-          checked={isAudioPlaybackEnabled}
-          onChange={e => setIsAudioPlaybackEnabled(e.target.checked)}
-          disabled={false}
-          className="w-4 h-4"
-        />
-        <label htmlFor="audio-playback" className="flex items-center cursor-pointer">
-          Audio playback
-        </label>
       </div>
 
       <div className="flex flex-row items-center gap-2">
