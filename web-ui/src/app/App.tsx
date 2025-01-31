@@ -202,21 +202,6 @@ function App() {
     sendClientEvent({ type: "response.create" }, "trigger response");
   };
 
-  const handleTalkButtonDown = () => {
-    if (sessionStatus !== "CONNECTED" || dataChannel?.readyState !== "open")
-      return;
-    cancelAssistantSpeech();
-  };
-
-  const handleTalkButtonUp = () => {
-    if (
-      sessionStatus !== "CONNECTED" ||
-      dataChannel?.readyState !== "open"
-    )
-      return;
-
-  };
-
   const handleAgentChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     const newAgentConfig = e.target.value;
     const url = new URL(window.location.toString());
@@ -232,7 +217,6 @@ function App() {
   };
 
   useEffect(() => {
-    const storedPushToTalkUI = localStorage.getItem("pushToTalkUI");
     const storedLogsExpanded = localStorage.getItem("logsExpanded");
     if (storedLogsExpanded) {
       setIsEventsPaneExpanded(storedLogsExpanded === "true");
@@ -341,8 +325,6 @@ function App() {
 
       <BottomToolbar
         sessionStatus={sessionStatus}
-        handleTalkButtonDown={handleTalkButtonDown}
-        handleTalkButtonUp={handleTalkButtonUp}
         isEventsPaneExpanded={isEventsPaneExpanded}
         setIsEventsPaneExpanded={setIsEventsPaneExpanded}
       />
