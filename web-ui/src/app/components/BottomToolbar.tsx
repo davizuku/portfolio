@@ -3,9 +3,6 @@ import { SessionStatus } from "@/app/types";
 
 interface BottomToolbarProps {
   sessionStatus: SessionStatus;
-  isPTTActive: boolean;
-  setIsPTTActive: (val: boolean) => void;
-  isPTTUserSpeaking: boolean;
   handleTalkButtonDown: () => void;
   handleTalkButtonUp: () => void;
   isEventsPaneExpanded: boolean;
@@ -14,9 +11,6 @@ interface BottomToolbarProps {
 
 function BottomToolbar({
   sessionStatus,
-  isPTTActive,
-  setIsPTTActive,
-  isPTTUserSpeaking,
   handleTalkButtonDown,
   handleTalkButtonUp,
   isEventsPaneExpanded,
@@ -26,27 +20,16 @@ function BottomToolbar({
   return (
     <div className="p-4 flex flex-row items-center justify-center gap-x-8">
       <div className="flex flex-row items-center gap-2">
-        <input
-          id="push-to-talk"
-          type="checkbox"
-          checked={isPTTActive}
-          onChange={e => setIsPTTActive(e.target.checked)}
-          disabled={false}
-          className="w-4 h-4"
-        />
-        <label htmlFor="push-to-talk" className="flex items-center cursor-pointer">
-          Push to talk
-        </label>
         <button
           onMouseDown={handleTalkButtonDown}
           onMouseUp={handleTalkButtonUp}
           onTouchStart={handleTalkButtonDown}
           onTouchEnd={handleTalkButtonUp}
-          disabled={!isPTTActive}
+          disabled={true}
           className={
-            (isPTTUserSpeaking ? "bg-gray-300" : "bg-gray-200") +
+            "bg-gray-200" +
             " py-1 px-4 cursor-pointer rounded-full" +
-            (!isPTTActive ? " bg-gray-100 text-gray-400" : "")
+            " bg-gray-100 text-gray-400"
           }
         >
           Talk
