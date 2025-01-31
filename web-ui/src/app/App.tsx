@@ -19,9 +19,6 @@ import { useTranscript } from "@/app/contexts/TranscriptContext";
 import { useEvent } from "@/app/contexts/EventContext";
 import { useHandleServerEvent } from "./hooks/useHandleServerEvent";
 
-// Utilities
-import { createRealtimeConnection } from "./lib/realtimeConnection";
-
 // Agent configs
 import { allAgentSets, defaultAgentSetKey } from "@/app/agentConfigs";
 
@@ -93,12 +90,6 @@ function App() {
   }, [searchParams]);
 
   useEffect(() => {
-    if (selectedAgentName && sessionStatus === "DISCONNECTED") {
-      connectToRealtime();
-    }
-  }, [selectedAgentName]);
-
-  useEffect(() => {
     if (
       sessionStatus === "CONNECTED" &&
       selectedAgentConfigSet &&
@@ -123,82 +114,6 @@ function App() {
       updateSession();
     }
   }, [isPTTActive]);
-
-  const fetchEphemeralKey = async (): Promise<string | null> => {
-    logClientEvent({ url: "/session" }, "fetch_session_token_request");
-    const tokenResponse = await fetch("/api/session");
-    const data = await tokenResponse.json();
-    logServerEvent(data, "fetch_session_token_response");
-
-    if (!data.client_secret?.value) {
-      logClientEvent(data, "error.no_ephemeral_key");
-      console.error("No ephemeral key provided by the server");
-      setSessionStatus("DISCONNECTED");
-      return null;
-    }
-
-    return data.client_secret.value;
-  };
-
-  const connectToRealtime = async () => {
-    if (sessionStatus !== "DISCONNECTED") return;
-    setSessionStatus("CONNECTING");
-
-    try {
-      const EPHEMERAL_KEY = await fetchEphemeralKey();
-      if (!EPHEMERAL_KEY) {
-        return;
-      }
-
-      if (!audioElementRef.current) {
-        audioElementRef.current = document.createElement("audio");
-      }
-      audioElementRef.current.autoplay = isAudioPlaybackEnabled;
-
-      const { pc, dc } = await createRealtimeConnection(
-        EPHEMERAL_KEY,
-        audioElementRef
-      );
-      pcRef.current = pc;
-      dcRef.current = dc;
-
-      dc.addEventListener("open", () => {
-        logClientEvent({}, "data_channel.open");
-      });
-      dc.addEventListener("close", () => {
-        logClientEvent({}, "data_channel.close");
-      });
-      dc.addEventListener("error", (err: any) => {
-        logClientEvent({ error: err }, "data_channel.error");
-      });
-      dc.addEventListener("message", (e: MessageEvent) => {
-        handleServerEventRef.current(JSON.parse(e.data));
-      });
-
-      setDataChannel(dc);
-    } catch (err) {
-      console.error("Error connecting to realtime:", err);
-      setSessionStatus("DISCONNECTED");
-    }
-  };
-
-  const disconnectFromRealtime = () => {
-    if (pcRef.current) {
-      pcRef.current.getSenders().forEach((sender) => {
-        if (sender.track) {
-          sender.track.stop();
-        }
-      });
-
-      pcRef.current.close();
-      pcRef.current = null;
-    }
-    setDataChannel(null);
-    setSessionStatus("DISCONNECTED");
-    setIsPTTUserSpeaking(false);
-
-    logClientEvent({}, "disconnected");
-  };
 
   const sendSimulatedUserMessage = (text: string) => {
     const id = uuidv4().slice(0, 32);
@@ -332,15 +247,6 @@ function App() {
     setIsPTTUserSpeaking(false);
     sendClientEvent({ type: "input_audio_buffer.commit" }, "commit PTT");
     sendClientEvent({ type: "response.create" }, "trigger response PTT");
-  };
-
-  const onToggleConnection = () => {
-    if (sessionStatus === "CONNECTED" || sessionStatus === "CONNECTING") {
-      disconnectFromRealtime();
-      setSessionStatus("DISCONNECTED");
-    } else {
-      connectToRealtime();
-    }
   };
 
   const handleAgentChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
@@ -499,7 +405,6 @@ function App() {
 
       <BottomToolbar
         sessionStatus={sessionStatus}
-        onToggleConnection={onToggleConnection}
         isPTTActive={isPTTActive}
         setIsPTTActive={setIsPTTActive}
         isPTTUserSpeaking={isPTTUserSpeaking}
