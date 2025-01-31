@@ -12,7 +12,7 @@ import Events from "./components/Events";
 import BottomToolbar from "./components/BottomToolbar";
 
 // Types
-import { AgentConfig, SessionStatus } from "@/app/types";
+import { AgentConfig } from "@/app/types";
 
 // Context providers & hooks
 import { useTranscript } from "@/app/contexts/TranscriptContext";
@@ -32,9 +32,6 @@ function App() {
   const [selectedAgentName, setSelectedAgentName] = useState<string>("");
   const [selectedAgentConfigSet, setSelectedAgentConfigSet] =
     useState<AgentConfig[] | null>(null);
-
-  const [sessionStatus, setSessionStatus] =
-    useState<SessionStatus>("DISCONNECTED");
 
   const [isEventsPaneExpanded, setIsEventsPaneExpanded] =
     useState<boolean>(true);
@@ -57,7 +54,6 @@ function App() {
   };
 
   const handleServerEventRef = useHandleServerEvent({
-    setSessionStatus,
     selectedAgentName,
     selectedAgentConfigSet,
     sendClientEvent,
@@ -83,7 +79,6 @@ function App() {
 
   useEffect(() => {
     if (
-      sessionStatus === "CONNECTED" &&
       selectedAgentConfigSet &&
       selectedAgentName
     ) {
@@ -96,7 +91,7 @@ function App() {
       );
       updateSession(true);
     }
-  }, [selectedAgentConfigSet, selectedAgentName, sessionStatus]);
+  }, [selectedAgentConfigSet, selectedAgentName]);
 
   const sendSimulatedUserMessage = (text: string) => {
     const id = uuidv4().slice(0, 32);
@@ -318,7 +313,6 @@ function App() {
       </div>
 
       <BottomToolbar
-        sessionStatus={sessionStatus}
         isEventsPaneExpanded={isEventsPaneExpanded}
         setIsEventsPaneExpanded={setIsEventsPaneExpanded}
       />

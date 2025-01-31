@@ -1,14 +1,11 @@
 import React from "react";
-import { SessionStatus } from "@/app/types";
 
 interface BottomToolbarProps {
-  sessionStatus: SessionStatus;
   isEventsPaneExpanded: boolean;
   setIsEventsPaneExpanded: (val: boolean) => void;
 }
 
 function BottomToolbar({
-  sessionStatus,
   isEventsPaneExpanded,
   setIsEventsPaneExpanded
 }: BottomToolbarProps) {

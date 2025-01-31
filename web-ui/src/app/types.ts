@@ -1,4 +1,3 @@
-export type SessionStatus = "DISCONNECTED" | "CONNECTING" | "CONNECTED";
 
 export interface ToolParameterProperty {
   type: string;
