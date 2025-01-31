@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useSearchParams } from "next/navigation";
 import { v4 as uuidv4 } from "uuid";
 
@@ -33,9 +33,6 @@ function App() {
   const [selectedAgentConfigSet, setSelectedAgentConfigSet] =
     useState<AgentConfig[] | null>(null);
 
-  const [dataChannel, setDataChannel] = useState<RTCDataChannel | null>(null);
-  const pcRef = useRef<RTCPeerConnection | null>(null);
-  const dcRef = useRef<RTCDataChannel | null>(null);
   const [sessionStatus, setSessionStatus] =
     useState<SessionStatus>("DISCONNECTED");
 
@@ -44,16 +41,16 @@ function App() {
   const [userText, setUserText] = useState<string>("");
 
   const sendClientEvent = (eventObj: any, eventNameSuffix = "") => {
-    if (dcRef.current && dcRef.current.readyState === "open") {
-      logClientEvent(eventObj, eventNameSuffix);
-      dcRef.current.send(JSON.stringify(eventObj));
-    } else {
+    logClientEvent(eventObj, eventNameSuffix);
+    try {
+      // TODO: Send message to chat api
+    } catch (error) {
       logClientEvent(
         { attemptedEvent: eventObj.type },
-        "error.data_channel_not_open"
+        "error.send_message_to_chat_api"
       );
       console.error(
-        "Failed to send message - no data channel available",
+        "Failed to send message to chat API",
         eventObj
       );
     }
@@ -314,10 +311,7 @@ function App() {
           userText={userText}
           setUserText={setUserText}
           onSendMessage={handleSendTextMessage}
-          canSend={
-            sessionStatus === "CONNECTED" &&
-            dcRef.current?.readyState === "open"
-          }
+          canSend={true}
         />
 
         <Events isExpanded={isEventsPaneExpanded} />
