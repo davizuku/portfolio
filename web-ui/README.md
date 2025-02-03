@@ -70,3 +70,7 @@ This fully specifies the agent set that was used in the interaction shown in the
 ## Core Contributors
 - Noah MacCallum - [noahmacca](https://x.com/noahmacca)
 - Ilan Bigio - [ibigio](https://github.com/ibigio)
+
+
+# References
+- Chat UI inspired from: https://github.com/jherr/deepseek-start
