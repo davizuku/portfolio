@@ -5,7 +5,7 @@ export async function chat({ messages }: { messages: Message[] }) {
             "Content-Type": "application/json",
         },
         body: JSON.stringify({
-            model: "mario",
+            model: "linkedin-agent",
             streaming: true,
             options: {
                 temperature: 0.1,
