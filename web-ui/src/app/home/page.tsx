@@ -63,6 +63,17 @@ export default function Home() {
                     orientation="right"
                     palette="primary"
                 />
+                <PortfolioSection
+                    title="Skills"
+                    description={<ul className="list-disc list-inside">
+                        <li><b>Industry Knowledge</b>: Artificial Intelligence (NLP & ML), Data Analysis, Architectural Design, Project Management, TDD</li>
+                        <li><b>Tools & Tech</b>: Backend (Python, PHP, Node.js), Frontend (Next.js, React, Vue), Infrastructure (MySQL, Docker, AWS)</li>
+                        <li><b>Interpersonal</b>: Attention to detail, Critical thinking, Problem solving, Team Work, Leadership, Organization</li>
+                    </ul>}
+                    imagePath="/img/skills.png"
+                    orientation="left"
+                    palette="secondary"
+                />
             </main>
 
             <footer className="w-full max-w-4xl text-center mt-8 py-4 text-gray-600">

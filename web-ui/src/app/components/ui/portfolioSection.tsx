@@ -1,13 +1,13 @@
 "use client";
 
-import React, { useEffect, useRef } from "react";
+import React, { useEffect, useRef, JSX } from "react";
 import { BotMessageSquareIcon } from "lucide-react";
 import Link from "next/link";
 import Image from "next/image";
 
 export interface PortfolioSectionProps {
   title: string;
-  description: string;
+  description: string | JSX.Element;
   imagePath: string;
   orientation: "left" | "right";
   palette?: "primary" | "secondary";
@@ -50,7 +50,7 @@ export default function PortfolioSection({ title, description, imagePath, orient
         >
             <div className={`col-span-3 grow flex flex-col items-center ${itemsAlignment} justify-center gap-5 p-6`}>
                 <h2 className={`text-2xl font-semibold w-full text-center ${textAlignment}`}>{title}</h2>
-                <p className={`text-center ${textAlignment}`}>{description}</p>
+                <div className={`text-center ${textAlignment}`}>{description}</div>
                 <p>
                     <Link href="#assistant" className={`mt-4 px-4 py-2 ${btnBgColor} ${btnTextColor} rounded ${btnAccentColor} ${textAlignment}`}>
                         <BotMessageSquareIcon className="w-4 h-4 inline" /> Ask the assistant
