@@ -35,8 +35,8 @@ export default function PortfolioSection({ title, description, imagePath, orient
         return () => window.removeEventListener("scroll", handleScroll);
     }, []);
 
-    let textAlignment = orientation == 'left' ? 'lg:text-left' : 'lg:text-right';
-    let itemsAlignment = orientation == 'left' ? 'lg:items-start' : 'lg:items-end';
+    let textAlignment = orientation == 'left' ? 'md:text-left' : 'md:text-right';
+    let itemsAlignment = orientation == 'left' ? 'md:items-start' : 'md:items-end';
     let bgColor = palette == 'primary' ? 'bg-primary' : 'bg-secondary';
     let textColor = palette == 'primary' ? 'text-secondary' : 'text-primary';
     let btnBgColor = palette == 'primary' ? 'bg-secondary' : 'bg-primary';
@@ -49,7 +49,7 @@ export default function PortfolioSection({ title, description, imagePath, orient
                             flex flex-col ${orientation == 'left' ? 'md:flex-row-reverse' : 'md:flex-row'} gap-5`}
         >
             <div className={`col-span-3 grow flex flex-col items-center ${itemsAlignment} justify-center gap-5 p-6`}>
-                <h2 className={`text-2xl font-semibold w-full ${textAlignment}`}>{title}</h2>
+                <h2 className={`text-2xl font-semibold w-full text-center ${textAlignment}`}>{title}</h2>
                 <p className={`text-center ${textAlignment}`}>{description}</p>
                 <p>
                     <Link href="#assistant" className={`mt-4 px-4 py-2 ${btnBgColor} ${btnTextColor} rounded ${btnAccentColor} ${textAlignment}`}>
@@ -57,7 +57,7 @@ export default function PortfolioSection({ title, description, imagePath, orient
                     </Link>
                 </p>
             </div>
-            <div className="col-span-2 flex flex-col items-center justify-center">
+            <div className="w-full md:w-3/5 lg:w-1/3 flex flex-col items-center justify-center">
                 <div ref={sectionImgRef} className="flex-none relative w-full shadow-lg transition-transform duration-500 transform translate-x-full">
                     <Image
                         alt={title}
