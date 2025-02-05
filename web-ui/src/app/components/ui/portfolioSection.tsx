@@ -19,8 +19,8 @@ export default function PortfolioSection({ title, description, imagePath, orient
 
     useEffect(() => {
         const handleScroll = () => {
-            const section = sectionRef.current;
-            const sectionImg = sectionImgRef.current;
+            const section = sectionRef.current as HTMLElement | null;
+            const sectionImg = sectionImgRef.current as HTMLElement | null;
             if (section && sectionImg) {
                 const rect = section.getBoundingClientRect();
                 if (rect.top < window.innerHeight && rect.bottom >= 0) {
