@@ -1,6 +1,7 @@
 import React from "react";
 import Link from "next/link";
 import Image from "next/image";
+import { FaLinkedin, FaGithub, FaCode } from "react-icons/fa"; // Import icons
 import PortfolioSection from "../components/ui/portfolioSection";
 
 
@@ -11,14 +12,6 @@ export default function Home() {
         <div className="min-h-screen flex flex-col items-center">
             <header className="hidden w-full max-w-4xl flex justify-between items-center py-4">
                 <h1 className="text-3xl font-bold">David Álvarez Pons</h1>
-                <Link
-                    href="https://www.linkedin.com/in/david-alvarez-pons/"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="text-blue-600 hover:underline"
-                >
-                    LinkedIn
-                </Link>
             </header>
 
             <main className="w-full flex flex-col">
@@ -37,6 +30,32 @@ export default function Home() {
                         <p className="text-primary text-center italic m-auto w-2/3 md:w-1/2 text-balance">
                             Versatile Software Engineer with a passion for sustainable, scalable solutions and team growth.
                         </p>
+                        <div className="flex space-x-4 text-primary">
+                            <Link
+                                href="https://www.linkedin.com/in/david-alvarez-pons/"
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="hover:text-white"
+                            >
+                                <FaLinkedin size={24} />
+                            </Link>
+                            <Link
+                                href="https://github.com/davizuku"
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="hover:text-white"
+                            >
+                                <FaGithub size={24} />
+                            </Link>
+                            <Link
+                                href="https://leetcode.com/davizuku"
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="hover:text-white"
+                            >
+                                <FaCode size={24} />
+                            </Link>
+                        </div>
                     </div>
                     <div className="absolute bottom-10 w-full text-center animate-bounce opacity-50 text-xs md:text-base">
                         <p className="text-primary">Scroll down to learn more</p>
