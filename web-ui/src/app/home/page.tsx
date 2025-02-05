@@ -35,7 +35,7 @@ export default function Home() {
                         </div>
                         <h1 className="text-3xl md:text-4xl text-primary font-bold">David Álvarez Pons</h1>
                         <p className="text-primary text-center italic m-auto w-2/3 md:w-1/2 text-balance">
-                            Experienced Software Engineer with a passion for sustainable, scalable solutions and team growth.
+                            Versatile Software Engineer with a passion for sustainable, scalable solutions and team growth.
                         </p>
                     </div>
                     <div className="absolute bottom-10 w-full text-center animate-bounce opacity-50 text-xs md:text-base">
