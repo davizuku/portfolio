@@ -106,20 +106,22 @@ export function Chat() {
     const messagesWithThinkingSplit = useMessagesWithThinking(messages);
 
     return (
-        <div className="flex flex-col min-h-screen bg-gray-900">
-            <div className="p-4 container mx-auto max-w-4xl space-y-4">
-                <label htmlFor={"premise"}>
-                    Premise:
-                    <textarea name={"premise"} style={{ color: "black", padding: "5px 10px", width: "100%" }} value={premise} onChange={(e) => setPremise(e.target.value)} />
-                </label>
-            </div>
-            <div className="flex-1 p-4 container mx-auto max-w-4xl space-y-4 pb-32">
-                {messagesWithThinkingSplit
-                    .filter(({ role }) => role === "user" || role === "assistant")
-                    .map((m, index) => <AIMessage key={index} message={m} />)}
+        <div className="h-full flex flex-col bg-gray-700">
+            <div className="flex-grow overflow-y-auto">
+                <div className="p-4 container text-primary mx-auto max-w-4xl space-y-4">
+                    <label htmlFor={"premise"}>
+                        Premise:
+                        <textarea name={"premise"} style={{ color: "black", padding: "5px 10px", width: "100%" }} value={premise} onChange={(e) => setPremise(e.target.value)} />
+                    </label>
+                </div>
+                <div className="flex-1 p-4 container mx-auto max-w-4xl space-y-4 pb-32">
+                    {messagesWithThinkingSplit
+                        .filter(({ role }) => role === "user" || role === "assistant")
+                        .map((m, index) => <AIMessage key={index} message={m} />)}
+                </div>
             </div>
 
-            <div className="fixed bottom-0 left-0 right-0 p-4 bg-gray-800 border-t border-gray-700">
+            <div className="absolute bottom-0 left-0 right-0 p-4 bg-gray-800 border-t border-gray-700">
                 <form onSubmit={handleSubmit} className="container mx-auto max-w-4xl">
                     <div className="flex gap-2">
                         <div className="flex-1 relative">
@@ -128,7 +130,7 @@ export function Chat() {
                                 className="flex-1 bg-gray-900 border-gray-700 text-gray-100 pl-10"
                                 value={input}
                                 disabled={loading}
-                                placeholder="Ask your local DeepSeek..."
+                                placeholder="Ask the assistant..."
                                 onChange={(e) => setInput(e.target.value)}
                             />
                         </div>
