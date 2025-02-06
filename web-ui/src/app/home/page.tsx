@@ -21,7 +21,7 @@ export default function Home() {
             href="https://www.linkedin.com/in/david-alvarez-pons/"
             target="_blank"
             rel="noopener noreferrer"
-            className="hover:text-white"
+            className="hover:text-accent"
         >
             <FaLinkedin />
         </Link>,
@@ -30,16 +30,16 @@ export default function Home() {
             href="https://github.com/davizuku"
             target="_blank"
             rel="noopener noreferrer"
-            className="hover:text-white"
+            className="hover:text-accent"
         >
-            <FaGithub/>
+            <FaGithub />
         </Link>,
         <Link
             key="leetcode"
             href="https://leetcode.com/davizuku"
             target="_blank"
             rel="noopener noreferrer"
-            className="hover:text-white"
+            className="hover:text-accent"
         >
             <FaCode />
         </Link>,
