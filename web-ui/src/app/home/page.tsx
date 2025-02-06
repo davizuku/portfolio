@@ -4,6 +4,7 @@ import Image from "next/image";
 import { FaLinkedin, FaGithub, FaCode } from "react-icons/fa"; // Import icons
 import PortfolioSection from "@/app/components/ui/portfolioSection";
 import PortfolioHeader from "@/app/components/ui/portfolioHeader";
+import Assistant from "@/app/components/ui/Assistant";
 
 export default function Home() {
 
@@ -88,7 +89,7 @@ export default function Home() {
                     palette="secondary"
                 />
             </main>
-
+            <Assistant />
             <footer className="w-full max-w-4xl text-center mt-8 py-4 text-gray-600">
                 &copy; {new Date().getFullYear()} David Álvarez Pons. All rights reserved.
             </footer>
