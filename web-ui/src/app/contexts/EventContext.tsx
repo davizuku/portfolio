@@ -11,7 +11,7 @@ type EventContextValue = {
   toggleExpand: (id: number | string) => void;
 };
 
-const EventContext = createContext<EventContextValue | undefined>(undefined);
+export const EventContext = createContext<EventContextValue | undefined>(undefined);
 
 export const EventProvider: FC<PropsWithChildren> = ({ children }) => {
   const [loggedEvents, setLoggedEvents] = useState<LoggedEvent[]>([]);

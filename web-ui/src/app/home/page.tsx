@@ -4,7 +4,7 @@ import Image from "next/image";
 import { FaLinkedin, FaGithub, FaCode } from "react-icons/fa"; // Import icons
 import PortfolioSection from "@/app/components/ui/portfolioSection";
 import PortfolioHeader from "@/app/components/ui/portfolioHeader";
-import Assistant from "@/app/components/ui/Assistant";
+import { AssistantProvider } from "@/app/contexts/AssistantContext";
 
 export default function Home() {
 
@@ -48,7 +48,7 @@ export default function Home() {
 
     return (
         <div className="min-h-screen flex flex-col items-center overflow-hidden">
-
+            <AssistantProvider>
             <main className="w-full flex flex-col">
                 <PortfolioHeader
                     profileImage={profileImage}
@@ -89,7 +89,8 @@ export default function Home() {
                     palette="secondary"
                 />
             </main>
-            <Assistant />
+
+            </AssistantProvider>
             <footer className="w-full max-w-4xl text-center mt-8 py-4 text-gray-600">
                 &copy; {new Date().getFullYear()} David Álvarez Pons. All rights reserved.
             </footer>

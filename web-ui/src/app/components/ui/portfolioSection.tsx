@@ -2,8 +2,8 @@
 
 import React, { useEffect, useRef, JSX } from "react";
 import { BotMessageSquareIcon } from "lucide-react";
-import Link from "next/link";
 import Image from "next/image";
+import { useAssistant } from "@/app/contexts/AssistantContext";
 
 export interface PortfolioSectionProps {
   title: string;
@@ -16,6 +16,8 @@ export interface PortfolioSectionProps {
 export default function PortfolioSection({ title, description, imagePath, orientation, palette }: PortfolioSectionProps) {
     const sectionRef = useRef(null);
     const sectionImgRef = useRef(null);
+
+    const { askQuestion } = useAssistant();
 
     useEffect(() => {
         const handleScroll = () => {
@@ -52,9 +54,11 @@ export default function PortfolioSection({ title, description, imagePath, orient
                 <h2 className={`text-2xl font-semibold w-full text-center ${textAlignment}`}>{title}</h2>
                 <div className={`text-center ${textAlignment}`}>{description}</div>
                 <p>
-                    <Link href="#assistant" className={`mt-4 px-4 py-2 ${btnBgColor} ${btnTextColor} rounded ${btnAccentColor} ${textAlignment}`}>
+                    <button onClick={() => {
+                        askQuestion('Ask the assistant about: ' + title);
+                    }} className={`mt-4 px-4 py-2 ${btnBgColor} ${btnTextColor} rounded ${btnAccentColor} ${textAlignment}`}>
                         <BotMessageSquareIcon className="w-4 h-4 inline" /> Ask the assistant
-                    </Link>
+                    </button>
                 </p>
             </div>
             <div className="w-full md:w-3/5 lg:w-1/3 flex flex-col items-center justify-center">

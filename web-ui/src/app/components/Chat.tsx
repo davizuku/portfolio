@@ -1,11 +1,12 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import Markdown from "react-markdown";
 import { Bot, Loader2, MessageSquare, Send, User2 } from "lucide-react";
 import { Input } from "@/app/components/ui/input";
 import { Button } from "@/app/components/ui/button";
 import { chat } from "@/app/lib/chat";
+import { useAssistant } from "@/app/contexts/AssistantContext";
 
 function useMessagesWithThinking(messages: Message[]) {
     let finishedThinking = true;
@@ -69,6 +70,14 @@ export function Chat() {
     const [input, setInput] = useState("");
     const [premise, setPremise] = useState("You are a software developer with a focus on React/TypeScript.\rKeep your answer simple and straight forward.");
     const [loading, setLoading] = useState(false);
+
+    const { questions, answerQuestion } = useAssistant();
+    useEffect(() => {
+        if (questions.length > 0) {
+            setMessages((prev) => [...prev, { role: "user", content: questions[0] }]);
+            answerQuestion();
+        }
+    }, [questions]);
 
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
