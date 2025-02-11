@@ -5,7 +5,7 @@ import Markdown from "react-markdown";
 import { Bot, Loader2, MessageSquare, Send, User2 } from "lucide-react";
 import { Input } from "@/app/components/ui/input";
 import { Button } from "@/app/components/ui/button";
-import { chat } from "@/app/lib/chat";
+import { getResponse } from "@/app/lib/chat";
 import { useAssistant } from "@/app/contexts/AssistantContext";
 
 function useMessagesWithThinking(messages: Message[]) {
@@ -48,23 +48,6 @@ function useMessagesWithThinking(messages: Message[]) {
     );
 }
 
-function streamAsyncIterator(reader: ReadableStreamDefaultReader<Uint8Array>) {
-    const decoder = new TextDecoder("utf-8");
-    return {
-        async *[Symbol.asyncIterator]() {
-            try {
-                while (true) {
-                    const { done, value } = await reader.read();
-                    if (done) return;
-                    yield decoder.decode(value);
-                }
-            } finally {
-                reader.releaseLock();
-            }
-        },
-    };
-}
-
 export function Chat() {
     const [messages, setMessages] = useState<Message[]>([]);
     const [input, setInput] = useState("");
@@ -83,32 +66,20 @@ export function Chat() {
         e.preventDefault();
         setInput("");
         setLoading(true);
-
         const messagesWithInput: Message[] = [
             ...messages,
             { role: "system", content: premise },
             { role: "user", content: input },
         ];
         setMessages(messagesWithInput);
-
-        const stream = await chat({ messages: messagesWithInput });
-        if (stream.body) {
-            let assistantResponse = "";
-            const reader = stream.body.getReader();
-            for await (const value of streamAsyncIterator(reader)) {
-                const {
-                    message: { content },
-                } = JSON.parse(value);
-                assistantResponse += content;
-                setMessages([
-                    ...messagesWithInput,
-                    {
-                        role: "assistant",
-                        content: assistantResponse,
-                    },
-                ]);
-            }
-        }
+        const response = await getResponse(messagesWithInput);
+        setMessages([
+            ...messagesWithInput,
+            {
+                role: "assistant",
+                content: response.content,
+            },
+        ]);
         setLoading(false);
     };
 
