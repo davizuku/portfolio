@@ -76,7 +76,8 @@ export function Chat() {
             { role: "system", content: systemPrompt },
             { role: "user", content: input },
         ];
-        setMessages(messagesWithInput);
+        const thinkingMessage: Message = { role: "assistant", content: "<think>" };
+        setMessages([...messagesWithInput, thinkingMessage]);
         const response = await getResponse(messagesWithInput);
         setMessages([
             ...messagesWithInput,
@@ -156,7 +157,8 @@ const AIMessage: React.FC<{ message: MessageWithThinking }> = ({ message }) => {
                         <span>{message.role === "user" ? "You" : "DeepSeek R1 (32b)"}</span>
                     </span>
                     <span>
-                        {message.role === "assistant" && (
+                        {/* Consider this block when streaming from the backend to the frontend */}
+                        {false && message.role === "assistant" && (
                             <span
                                 style={{ cursor: "pointer", fontStyle: "italic", fontSize: "12px" }}
                                 onClick={() => setCollapsed((c) => !c)}
