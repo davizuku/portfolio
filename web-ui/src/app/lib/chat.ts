@@ -29,6 +29,7 @@ export async function getResponse(messages: Message[]): Promise<Message> {
                         const parsed = JSON.parse(data);
                         const content = parsed.choices[0].delta.content;
                         if (content) {
+                            // console.log('Debug content: ', content);
                             outputTokens.push(content);
                         }
                     } catch (e) {
