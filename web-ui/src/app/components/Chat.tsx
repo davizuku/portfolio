@@ -51,8 +51,13 @@ function useMessagesWithThinking(messages: Message[]) {
 export function Chat() {
     const [messages, setMessages] = useState<Message[]>([]);
     const [input, setInput] = useState("");
-    const [premise, setPremise] = useState("You are a software developer with a focus on React/TypeScript.\rKeep your answer simple and straight forward.");
     const [loading, setLoading] = useState(false);
+    const [systemPrompt, setSystemPrompt] = useState('');
+    useEffect(() => {
+        fetch('/api/prompt')
+        .then((data) => data.json())
+        .then((data) => setSystemPrompt(data.prompt));
+    }, []);
 
     const { questions, answerQuestion } = useAssistant();
     useEffect(() => {
@@ -68,7 +73,7 @@ export function Chat() {
         setLoading(true);
         const messagesWithInput: Message[] = [
             ...messages,
-            { role: "system", content: premise },
+            { role: "system", content: systemPrompt },
             { role: "user", content: input },
         ];
         setMessages(messagesWithInput);
@@ -88,12 +93,6 @@ export function Chat() {
     return (
         <div className="h-full flex flex-col bg-gray-700">
             <div className="flex-grow overflow-y-auto">
-                <div className="p-4 container text-primary mx-auto max-w-4xl space-y-4">
-                    <label htmlFor={"premise"}>
-                        Premise:
-                        <textarea name={"premise"} style={{ color: "black", padding: "5px 10px", width: "100%" }} value={premise} onChange={(e) => setPremise(e.target.value)} />
-                    </label>
-                </div>
                 <div className="flex-1 p-4 container mx-auto max-w-4xl space-y-4 pb-32">
                     {messagesWithThinkingSplit
                         .filter(({ role }) => role === "user" || role === "assistant")
