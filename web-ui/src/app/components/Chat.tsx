@@ -154,7 +154,7 @@ const AIMessage: React.FC<{ message: MessageWithThinking }> = ({ message }) => {
                             !message.finishedThinking ? <Loader2 className="h-4 w-4 animate-spin" /> : <Bot className="h-4 w-4" />
                         )}
 
-                        <span>{message.role === "user" ? "You" : "David's Assistant"}</span>
+                        <span>{message.role === "user" ? "You" : "Assistant"}</span>
                     </span>
                     <span>
                         {/* Consider this block when streaming from the backend to the frontend */}
