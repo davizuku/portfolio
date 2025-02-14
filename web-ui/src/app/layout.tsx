@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import "@/app/globals.css";
+import { AssistantProvider } from "@/app/contexts/AssistantContext";
 
 export const metadata: Metadata = {
   title: "David Álvarez Pons",
@@ -16,7 +17,11 @@ export default function RootLayout({
       <head>
         <meta name="viewport" content="width=device-width, initial-scale=1, interactive-widget=resizes-content"></meta>
       </head>
-      <body className={`antialiased`}>{children}</body>
+      <body className={`antialiased`}>
+        <AssistantProvider>
+          {children}
+        </AssistantProvider>
+      </body>
     </html>
   );
 }
