@@ -79,20 +79,13 @@ export function Chat() {
             },
             body: JSON.stringify({"messages": messagesWithInput}),
         });
-        if (!response.body) return;
+        if (!response.body) {
+            console.log('Response from /api/agent did not contain any body', response);
+            return;
+        }
         const reader = response.body.getReader();
-        let startedThinking, finishedThinking = false;
         for await (const value of streamAsyncIterator(reader)) {
-            const { text, thinking } = JSON.parse(value);
-            if (!startedThinking && thinking) {
-                startedThinking = true;
-                responseMessage.content += "<think>";
-            }
-            responseMessage.content += text;
-            if (startedThinking && !finishedThinking && !thinking) {
-                finishedThinking = true;
-                responseMessage.content += "</think>";
-            }
+            responseMessage.content += value;
             setMessages([...messagesWithInput, responseMessage]);
         }
         setLoading(false);
