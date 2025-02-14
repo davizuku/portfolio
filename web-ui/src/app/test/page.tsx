@@ -16,7 +16,7 @@ export default function Page() {
       if (!response.body) return;
       const reader = response.body.getReader();
       for await (const value of streamAsyncIterator(reader)) {
-        const { iteration, text } = JSON.parse(value);
+        const { text } = JSON.parse(value);
         setBuffer((prev) => prev + text);
       }
     }
