@@ -7,6 +7,7 @@ import { Input } from "@/app/components/ui/input";
 import { Button } from "@/app/components/ui/button";
 import { useAssistant } from "@/app/contexts/AssistantContext";
 import { streamAsyncIterator } from "@/app/lib/utils";
+import { Message, MessageWithThinking } from "@/app/types";
 
 function useMessagesWithThinking(messages: Message[]) {
     let finishedThinking = true;
