@@ -9,20 +9,30 @@ const openai = new OpenAI({
   defaultHeaders: {}
 });
 
+async function callModelWithOpenAI(payload) {
+  return await openai.chat.completions.create(payload);
+}
+
 async function getChatCompletion(messages: Message[]): Promise<ReadableStream> {
   let model = "";
   model = "google/gemini-2.0-flash-001"; // Pay 0.1 -> 0.4
   model = "google/gemini-2.0-flash-lite-preview-02-05:free";
-  model = "deepseek/deepseek-r1-distill-llama-8b"; // Pay 0.04 -> 0.04
   model = 'sophosympatheia/rogue-rose-103b-v0.2:free';
+  model = "deepseek/deepseek-r1-distill-llama-8b"; // Pay 0.04 -> 0.04
+  model = "deepseek/deepseek-r1-distill-llama-70b:free"
 
-  const completion = await openai.chat.completions.create({
+  // TODO: fill systemPrompt with proper instructions
+  const systemPrompt: Message = { role: 'system', content: '' }
+  const payload = {
     model: model,
-    messages: messages.map((m: Message) => ({ role: m.role, content: m.content } ) ),
+    messages: [systemPrompt, ...messages].map((m: Message) => ({ role: m.role, content: m.content })),
     temperature: 0.5,
     max_completion_tokens: 300,
     stream: true,
-  });
+  }
+
+  const completion = await callModelWithOpenAI(payload);
+  // TODO: create a similar functio to use OpenRouter directly and see if we can capture the <think>...</think> process.
 
   const stream = new ReadableStream({
     async start(controller) {
