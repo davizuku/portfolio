@@ -52,12 +52,6 @@ export function Chat() {
     const [messages, setMessages] = useState<Message[]>([]);
     const [input, setInput] = useState("");
     const [loading, setLoading] = useState(false);
-    const [systemPrompt, setSystemPrompt] = useState('');
-    useEffect(() => {
-        fetch('/api/prompt')
-        .then((data) => data.json())
-        .then((data) => setSystemPrompt(data.prompt));
-    }, []);
 
     const { questions, answerQuestion } = useAssistant();
     useEffect(() => {
@@ -73,7 +67,6 @@ export function Chat() {
         setLoading(true);
         const messagesWithInput: Message[] = [
             ...messages,
-            { role: "system", content: systemPrompt },
             { role: "user", content: input },
         ];
         let responseMessage: Message = { role: "assistant", content: "" };
