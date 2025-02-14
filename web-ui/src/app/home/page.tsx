@@ -6,7 +6,7 @@ import PortfolioSection from "@/app/components/ui/portfolioSection";
 import PortfolioHeader from "@/app/components/ui/portfolioHeader";
 import { AssistantProvider } from "@/app/contexts/AssistantContext";
 
-export default function Home() {
+export default function Page() {
 
     const profileImage = <Image src="/img/profile.jpg"
         alt="David Álvarez Pons"
