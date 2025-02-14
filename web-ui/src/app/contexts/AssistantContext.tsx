@@ -22,7 +22,7 @@ export const AssistantProvider: FC<PropsWithChildren> = ({ children }) => {
   return (
     <AssistantContext.Provider value={{ questions, askQuestion, answerQuestion }}>
     {children}
-      <Assistant />
+      <Assistant title="Chat Assistant" />
     </AssistantContext.Provider>
   );
 }
