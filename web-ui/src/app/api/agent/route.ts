@@ -1,15 +1,17 @@
 import { streamAsyncIterator } from "@/app/lib/utils";
 import { NextRequest, NextResponse } from "next/server";
 
-export async function GET(req: NextRequest) {
+export async function POST(req: NextRequest) {
   try {
     const url = process.env['LINKEDIN_AGENT_API_URL'];
     if (!url) throw new Error('Missing URL for LinkedIn Agent API');
+    const newBody = await req.json()
     const response = await fetch(url, {
-        method: "GET",
+        method: "POST",
         headers: {
           "Content-Type": "application/json"
-        }
+        },
+        body: JSON.stringify(newBody),
       });
     if (!response.body) throw new Error('Error requesting data to upstream');
     const reader = response.body.getReader();

@@ -5,8 +5,8 @@ import Markdown from "react-markdown";
 import { Bot, Loader2, MessageSquare, Send, User2 } from "lucide-react";
 import { Input } from "@/app/components/ui/input";
 import { Button } from "@/app/components/ui/button";
-import { getResponse } from "@/app/lib/chat";
 import { useAssistant } from "@/app/contexts/AssistantContext";
+import { streamAsyncIterator } from "@/app/lib/utils";
 
 function useMessagesWithThinking(messages: Message[]) {
     let finishedThinking = true;
@@ -76,16 +76,31 @@ export function Chat() {
             { role: "system", content: systemPrompt },
             { role: "user", content: input },
         ];
-        const thinkingMessage: Message = { role: "assistant", content: "<think>" };
-        setMessages([...messagesWithInput, thinkingMessage]);
-        const response = await getResponse(messagesWithInput);
-        setMessages([
-            ...messagesWithInput,
-            {
-                role: "assistant",
-                content: response.content,
+        let responseMessage: Message = { role: "assistant", content: "" };
+        setMessages([...messagesWithInput, responseMessage]);
+        const response = await fetch('api/agent', {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
             },
-        ]);
+            body: JSON.stringify({"messages": messagesWithInput}),
+        });
+        if (!response.body) return;
+        const reader = response.body.getReader();
+        let startedThinking, finishedThinking = false;
+        for await (const value of streamAsyncIterator(reader)) {
+            let { it, text, thinking } = JSON.parse(value);
+            if (!startedThinking && thinking) {
+                startedThinking = true;
+                responseMessage.content += "<think>";
+            }
+            responseMessage.content += text;
+            if (startedThinking && !finishedThinking && !thinking) {
+                finishedThinking = true;
+                responseMessage.content += "</think>";
+            }
+            setMessages([...messagesWithInput, responseMessage]);
+        }
         setLoading(false);
     };
 
@@ -157,8 +172,7 @@ const AIMessage: React.FC<{ message: MessageWithThinking }> = ({ message }) => {
                         <span>{message.role === "user" ? "You" : "Assistant"}</span>
                     </span>
                     <span>
-                        {/* Consider this block when streaming from the backend to the frontend */}
-                        {false && message.role === "assistant" && (
+                        {message.role === "assistant" && (
                             <span
                                 style={{ cursor: "pointer", fontStyle: "italic", fontSize: "12px" }}
                                 onClick={() => setCollapsed((c) => !c)}
