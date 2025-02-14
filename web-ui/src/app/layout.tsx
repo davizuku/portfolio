@@ -2,8 +2,8 @@ import type { Metadata } from "next";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "Realtime API Agents",
-  description: "A demo app from OpenAI.",
+  title: "David Álvarez Pons",
+  description: "Portfolio and LLM integration for David Álvarez Pons's LinkedIn profile.",
 };
 
 export default function RootLayout({
