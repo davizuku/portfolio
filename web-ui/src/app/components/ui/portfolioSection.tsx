@@ -37,13 +37,13 @@ export default function PortfolioSection({ title, description, imagePath, orient
         return () => window.removeEventListener("scroll", handleScroll);
     }, []);
 
-    let textAlignment = orientation == 'left' ? 'md:text-left' : 'md:text-right';
-    let itemsAlignment = orientation == 'left' ? 'md:items-start' : 'md:items-end';
-    let bgColor = palette == 'primary' ? 'bg-primary' : 'bg-secondary';
-    let textColor = palette == 'primary' ? 'text-secondary' : 'text-primary';
-    let btnBgColor = palette == 'primary' ? 'bg-secondary' : 'bg-primary';
-    let btnTextColor = palette == 'primary' ? 'text-primary' : 'text-secondary';
-    let btnAccentColor = palette == 'primary' ? 'hover:bg-accent' : 'hover:bg-accent-foreground';
+    const textAlignment = orientation == 'left' ? 'md:text-left' : 'md:text-right';
+    const itemsAlignment = orientation == 'left' ? 'md:items-start' : 'md:items-end';
+    const bgColor = palette == 'primary' ? 'bg-primary' : 'bg-secondary';
+    const textColor = palette == 'primary' ? 'text-secondary' : 'text-primary';
+    const btnBgColor = palette == 'primary' ? 'bg-secondary' : 'bg-primary';
+    const btnTextColor = palette == 'primary' ? 'text-primary' : 'text-secondary';
+    const btnAccentColor = palette == 'primary' ? 'hover:bg-accent' : 'hover:bg-accent-foreground';
 
     return (
         <section id="experience" ref={sectionRef}

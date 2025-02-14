@@ -70,7 +70,7 @@ export function Chat() {
             ...messages,
             { role: "user", content: input },
         ];
-        let responseMessage: Message = { role: "assistant", content: "" };
+        const responseMessage: Message = { role: "assistant", content: "" };
         setMessages([...messagesWithInput, responseMessage]);
         const response = await fetch('api/agent', {
             method: "POST",
@@ -83,7 +83,7 @@ export function Chat() {
         const reader = response.body.getReader();
         let startedThinking, finishedThinking = false;
         for await (const value of streamAsyncIterator(reader)) {
-            let { it, text, thinking } = JSON.parse(value);
+            const { text, thinking } = JSON.parse(value);
             if (!startedThinking && thinking) {
                 startedThinking = true;
                 responseMessage.content += "<think>";
