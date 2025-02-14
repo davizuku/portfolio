@@ -1,7 +1,7 @@
 'use client';
 
 import React, { createContext, useContext, useState, FC, PropsWithChildren } from "react";
-import Assistant from "@/app/components/ui/Assistant";
+import Assistant from "@/app/components/Assistant";
 
 type AssistantContextValue = {
   questions: string[];
