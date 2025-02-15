@@ -9,7 +9,7 @@ const openai = new OpenAI({
   defaultHeaders: {}
 });
 
-async function callModelWithOpenAI(payload) {
+async function callModelWithOpenAI(payload: OpenAI.Chat.Completions.ChatCompletionCreateParams) {
   return await openai.chat.completions.create(payload);
 }
 
@@ -29,7 +29,7 @@ async function getChatCompletion(messages: Message[]): Promise<ReadableStream> {
     temperature: 0.5,
     max_completion_tokens: 300,
     stream: true,
-  }
+  } as OpenAI.Chat.Completions.ChatCompletionCreateParams
 
   const completion = await callModelWithOpenAI(payload);
   // TODO: create a similar functio to use OpenRouter directly and see if we can capture the <think>...</think> process.
