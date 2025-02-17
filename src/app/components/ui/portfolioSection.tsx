@@ -7,38 +7,19 @@ import { useAssistant } from "@/app/contexts/AssistantContext";
 import { useCompletion } from "@ai-sdk/react";
 import { pick } from "@/app/lib/utils";
 
+export type SectionPalette = "primary" | "secondary";
+
 export interface PortfolioSectionProps {
   title: string;
   description: string | JSX.Element;
   imagePath: string;
   orientation: "left" | "right";
-  palette?: "primary" | "secondary";
+  palette?: SectionPalette;
 }
 
 export default function PortfolioSection({ title, description, imagePath, orientation, palette }: PortfolioSectionProps) {
     const sectionRef = useRef(null);
     const sectionImgRef = useRef(null);
-
-    const [lastQuestions, setLastQuestions] = useState<string[]>([]);
-
-    // @see: https://sdk.vercel.ai/docs/reference/ai-sdk-ui/use-chat
-    const { complete } = useCompletion({
-        api: 'api/writer',
-        onFinish: (prompt: string, completion: string) => {
-            setLastQuestions((prev) => [...prev, completion + '']);
-            askQuestion(completion)
-        },
-        onError: () => {
-            // Upon error, use previous completions instead
-            if (lastQuestions) {
-                askQuestion(pick(lastQuestions))
-            }
-        }
-    });
-    const { askQuestion } = useAssistant();
-    const askTheAssistant = async () => {
-        await complete("Can you tell me more about David's " + title + "?");
-    }
 
     useEffect(() => {
         const handleScroll = () => {
@@ -62,9 +43,6 @@ export default function PortfolioSection({ title, description, imagePath, orient
     const itemsAlignment = orientation == 'left' ? 'md:items-start' : 'md:items-end';
     const bgColor = palette == 'primary' ? 'bg-primary' : 'bg-secondary';
     const textColor = palette == 'primary' ? 'text-secondary' : 'text-primary';
-    const btnBgColor = palette == 'primary' ? 'bg-secondary' : 'bg-primary';
-    const btnTextColor = palette == 'primary' ? 'text-primary' : 'text-secondary';
-    const btnAccentColor = palette == 'primary' ? 'hover:bg-accent' : 'hover:bg-accent-foreground';
 
     return (
         <section id="experience" ref={sectionRef}
@@ -75,9 +53,11 @@ export default function PortfolioSection({ title, description, imagePath, orient
                 <h2 className={`text-2xl font-semibold w-full text-center ${textAlignment}`}>{title}</h2>
                 <div className={`text-center ${textAlignment}`}>{description}</div>
                 <p>
-                    <button onClick={askTheAssistant} className={`mt-4 px-4 py-2 ${btnBgColor} ${btnTextColor} rounded ${btnAccentColor} ${textAlignment}`}>
-                        <BotMessageSquareIcon className="w-4 h-4 inline" /> Ask the assistant
-                    </button>
+                    <AskAssistantButton
+                        title={title}
+                        palette={palette ?? "primary"}
+                        textAlignment={textAlignment}
+                    />
                 </p>
             </div>
             <div className="w-full md:w-3/5 lg:w-1/3 flex flex-col items-center justify-center">
@@ -93,5 +73,44 @@ export default function PortfolioSection({ title, description, imagePath, orient
                 </div>
             </div>
         </section>
+    );
+}
+
+export interface AskAssistantButtonProps {
+    title: string;
+    palette: SectionPalette;
+    textAlignment: string;
+}
+
+function AskAssistantButton({ title, palette, textAlignment }: AskAssistantButtonProps) {
+    const bgColor = palette == 'primary' ? 'bg-secondary' : 'bg-primary';
+    const textColor = palette == 'primary' ? 'text-primary' : 'text-secondary';
+    const accentColor = palette == 'primary' ? 'hover:bg-accent' : 'hover:bg-accent-foreground';
+
+    const [lastQuestions, setLastQuestions] = useState<string[]>([]);
+
+    // @see: https://sdk.vercel.ai/docs/reference/ai-sdk-ui/use-chat
+    const { complete } = useCompletion({
+        api: 'api/writer',
+        onFinish: (prompt: string, completion: string) => {
+            setLastQuestions((prev) => [...prev, completion + '']);
+            askQuestion(completion)
+        },
+        onError: () => {
+            // Upon error, use previous completions instead
+            if (lastQuestions) {
+                askQuestion(pick(lastQuestions))
+            }
+        }
+    });
+    const { askQuestion } = useAssistant();
+    const askTheAssistant = async () => {
+        await complete("Can you tell me more about David's " + title + "?");
+    }
+
+    return (
+        <button onClick={askTheAssistant} className={`mt-4 px-4 py-2 ${bgColor} ${textColor} rounded ${accentColor} ${textAlignment}`}>
+            <BotMessageSquareIcon className="w-4 h-4 inline" /> Ask the assistant
+        </button>
     );
 }
