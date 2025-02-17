@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useEffect, useRef, JSX, useState } from "react";
-import { BotMessageSquareIcon } from "lucide-react";
+import { BotMessageSquareIcon, Loader2 } from "lucide-react";
 import Image from "next/image";
 import { useAssistant } from "@/app/contexts/AssistantContext";
 import { useCompletion } from "@ai-sdk/react";
@@ -88,6 +88,7 @@ function AskAssistantButton({ title, palette, textAlignment }: AskAssistantButto
     const accentColor = palette == 'primary' ? 'hover:bg-accent' : 'hover:bg-accent-foreground';
 
     const [lastQuestions, setLastQuestions] = useState<string[]>([]);
+    const [loading, setLoading] = useState<boolean>(false);
 
     // @see: https://sdk.vercel.ai/docs/reference/ai-sdk-ui/use-chat
     const { complete } = useCompletion({
@@ -95,22 +96,28 @@ function AskAssistantButton({ title, palette, textAlignment }: AskAssistantButto
         onFinish: (prompt: string, completion: string) => {
             setLastQuestions((prev) => [...prev, completion + '']);
             askQuestion(completion)
+            setLoading(false);
         },
         onError: () => {
             // Upon error, use previous completions instead
             if (lastQuestions) {
                 askQuestion(pick(lastQuestions))
             }
+            setLoading(false);
         }
     });
     const { askQuestion } = useAssistant();
     const askTheAssistant = async () => {
+        setLoading(true);
         await complete("Can you tell me more about David's " + title + "?");
     }
 
     return (
-        <button onClick={askTheAssistant} className={`mt-4 px-4 py-2 ${bgColor} ${textColor} rounded ${accentColor} ${textAlignment}`}>
-            <BotMessageSquareIcon className="w-4 h-4 inline" /> Ask the assistant
+        <button onClick={askTheAssistant} disabled={loading} className={`mt-4 px-4 py-2 ${bgColor} ${textColor} rounded ${accentColor} ${textAlignment}`}>
+            { loading ?
+                <span><Loader2 className="w-4 h-4 inline animate-spin" /> Creating question...</span> :
+                <span><BotMessageSquareIcon className="w-4 h-4 inline" /> Ask the assistant</span>
+            }
         </button>
     );
 }
