@@ -6,100 +6,29 @@ import { Bot, Loader2, MessageSquare, Send, User2 } from "lucide-react";
 import { Input } from "@/app/components/ui/input";
 import { Button } from "@/app/components/ui/button";
 import { useAssistant } from "@/app/contexts/AssistantContext";
-import { streamAsyncIterator } from "@/app/lib/utils";
-import { Message, MessageWithThinking } from "@/app/types";
-
-function useMessagesWithThinking(messages: Message[]) {
-    let finishedThinking = true;
-    return useMemo(
-        () =>
-            messages.map((m: Message): MessageWithThinking => {
-                if (m.role === "assistant") {
-                    if (m.content.includes("</think>")) {
-                        finishedThinking = true;
-                        return {
-                            ...m,
-                            finishedThinking: finishedThinking,
-                            think: m.content
-                                .split("</think>")[0]
-                                .replace("</think>", "")
-                                .replace("<think>", ""),
-                            content: m.content.split("</think>")[1],
-                        };
-                    } else if (m.content.includes("<think>")) {
-                        finishedThinking = false;
-                        return {
-                            ...m,
-                            finishedThinking: finishedThinking,
-                            think: m.content.replace("<think>", ""),
-                            content: "",
-                        };
-                    } else {
-                        return {
-                            ...m,
-                            finishedThinking: finishedThinking,
-                            think: "",
-                            content: m.content,
-                        };
-                    }
-                }
-                return m;
-            }),
-        [messages]
-    );
-}
+import { useChat } from '@ai-sdk/react';
+import { UIMessage } from "ai";
 
 export function Chat() {
-    const [messages, setMessages] = useState<Message[]>([]);
-    const [input, setInput] = useState("");
-    const [loading, setLoading] = useState(false);
-
+    const { messages, input, handleInputChange, handleSubmit, append } = useChat({
+        // @see: https://sdk.vercel.ai/docs/reference/ai-sdk-ui/use-chat
+        api: 'api/agent',
+    });
     const { questions, answerQuestion } = useAssistant();
     useEffect(() => {
         if (questions.length > 0) {
-            setMessages((prev) => [...prev, { role: "user", content: questions[0] }]);
+            append({ role: "user", content: questions[0] })
             answerQuestion();
         }
     }, [questions]);
-
-    const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-        e.preventDefault();
-        setInput("");
-        setLoading(true);
-        const messagesWithInput: Message[] = [
-            ...messages,
-            { role: "user", content: input },
-        ];
-        const responseMessage: Message = { role: "assistant", content: "" };
-        setMessages([...messagesWithInput, responseMessage]);
-        const response = await fetch('api/agent', {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json"
-            },
-            body: JSON.stringify({"messages": messagesWithInput}),
-        });
-        if (!response.body) {
-            console.log('Response from /api/agent did not contain any body', response);
-            return;
-        }
-        const reader = response.body.getReader();
-        for await (const value of streamAsyncIterator(reader)) {
-            responseMessage.content += value;
-            setMessages([...messagesWithInput, responseMessage]);
-        }
-        setLoading(false);
-    };
-
-    const messagesWithThinkingSplit = useMessagesWithThinking(messages);
 
     return (
         <div className="h-full flex flex-col bg-gray-700">
             <div className="flex-grow overflow-y-auto">
                 <div className="flex-1 p-4 container mx-auto max-w-4xl space-y-4 pb-32">
-                    {messagesWithThinkingSplit
+                    {messages
                         .filter(({ role }) => role === "user" || role === "assistant")
-                        .map((m, index) => <AIMessage key={index} message={m} />)}
+                        .map((m) => <AIMessage key={m.id} message={m} />)}
                 </div>
             </div>
 
@@ -135,9 +64,7 @@ export function Chat() {
     );
 }
 
-const AIMessage: React.FC<{ message: MessageWithThinking }> = ({ message }) => {
-    const [collapsed, setCollapsed] = useState(true)
-
+const AIMessage: React.FC<{ message: UIMessage }> = ({ message }) => {
     return (
         <div
             className={`flex ${message.role === "user" ? "justify-end" : "justify-start"}`}
