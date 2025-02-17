@@ -24,7 +24,7 @@ export async function POST(req: NextRequest) {
   try {
     const { messages } = await req.json();
     let model = "";
-    // TODO: choose model or create fallback logic
+    // TODO: add fallback to paid model when rate limit reached
     model = "google/gemini-2.0-flash-001"; // Pay 0.1 -> 0.4
     model = 'sophosympatheia/rogue-rose-103b-v0.2:free';
     model = "deepseek/deepseek-r1-distill-llama-8b"; // Pay 0.04 -> 0.04
