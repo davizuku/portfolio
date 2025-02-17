@@ -1,8 +1,8 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useEffect } from "react";
 import Markdown from "react-markdown";
-import { Bot, Loader2, MessageSquare, Send, User2 } from "lucide-react";
+import { Bot, MessageSquare, Send, User2 } from "lucide-react";
 import { Input } from "@/app/components/ui/input";
 import { Button } from "@/app/components/ui/button";
 import { useAssistant } from "@/app/contexts/AssistantContext";
@@ -40,21 +40,16 @@ export function Chat() {
                             <Input
                                 className="flex-1 bg-gray-900 border-gray-700 text-gray-100 pl-10"
                                 value={input}
-                                disabled={loading}
                                 placeholder="Ask the assistant..."
-                                onChange={(e) => setInput(e.target.value)}
+                                onChange={handleInputChange}
                             />
                         </div>
                         <Button
                             type="submit"
-                            disabled={loading || !input.trim()}
+                            disabled={!input.trim()}
                             className="bg-primary hover:bg-primary/90"
                         >
-                            {loading ? (
-                                <Loader2 className="h-4 w-4 animate-spin" />
-                            ) : (
-                                <Send className="h-4 w-4" />
-                            )}
+                            <Send className="h-4 w-4" />
                             <span className="sr-only">Send message</span>
                         </Button>
                     </div>
@@ -77,37 +72,10 @@ const AIMessage: React.FC<{ message: UIMessage }> = ({ message }) => {
             >
                 <div className="flex items-center gap-2 mb-2" style={{ justifyContent: "space-between" }}>
                     <span className="text-sm font-medium" style={{ display: "flex", gap: 10 }}>
-                        {message.role === "user" ? (
-                            <User2 className="h-4 w-4" />
-                        ) : (
-                            !message.finishedThinking ? <Loader2 className="h-4 w-4 animate-spin" /> : <Bot className="h-4 w-4" />
-                        )}
-
+                        {message.role === "user" ? <User2 className="h-4 w-4" /> : <Bot className="h-4 w-4" />}
                         <span>{message.role === "user" ? "You" : "Assistant"}</span>
                     </span>
-                    <span>
-                        {message.role === "assistant" && (
-                            <span
-                                style={{ cursor: "pointer", fontStyle: "italic", fontSize: "12px" }}
-                                onClick={() => setCollapsed((c) => !c)}
-                            >
-                                {collapsed ? "show thoughts" : "hide thoughts"}
-                            </span>
-                        )}
-                    </span>
                 </div>
-
-                {message.role === "assistant" && !message.finishedThinking && (
-                    <div className="flex items-center gap-2 text-gray-400">
-                        <span className="text-sm">Thinking...</span>
-                    </div>
-                )}
-
-                {message.think && (
-                    <div style={{ display: collapsed ? "none" : "block" }} className="mb-2 text-sm italic border-l-2 border-gray-600 pl-2 py-1 text-gray-300">
-                        <Markdown>{message.think}</Markdown>
-                    </div>
-                )}
                 <article
                     className={`prose max-w-none ${message.role === "user"
                         ? "prose-invert prose-p:text-black prose-headings:text-black prose-strong:text-black prose-li:text-black"
