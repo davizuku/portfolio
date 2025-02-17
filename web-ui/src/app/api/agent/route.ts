@@ -7,6 +7,9 @@ const openrouter = createOpenRouter({
   apiKey: process.env['OPEN_ROUTER_API_KEY'],
 });
 
+// TODO: fill systemPrompt with proper instructions
+const systemPrompt = '';
+
 // Allow streaming responses up to 30 seconds
 export const maxDuration = 30;
 
@@ -22,14 +25,12 @@ export async function POST(req: NextRequest) {
     model = "deepseek/deepseek-r1-distill-llama-8b"; // Pay 0.04 -> 0.04
     model = "deepseek/deepseek-r1-distill-llama-70b:free"
 
-    // TODO: fill systemPrompt with proper instructions
-    const systemPrompt: CoreMessage = { role: 'system', content: '' }
-    const messagePrompt = [systemPrompt, ...messages]
     const result = streamText({
       model: openrouter(model),
+      system: systemPrompt,
       temperature: 0.5,
       maxTokens: 300,
-      messages: messagePrompt
+      messages: messages,
     });
     return result.toDataStreamResponse();
   } catch (error: any) {
