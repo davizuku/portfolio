@@ -11,7 +11,7 @@ export interface AssistantProps {
 }
 
 export default function Assistant({title}: AssistantProps) {
-
+    const [wasOpened, setWasOpened] = useState(false);
     const [isOpen, setIsOpen] = useState(false);
 
     const isMobile = useMediaQuery('(max-width: 768px)')
@@ -24,17 +24,25 @@ export default function Assistant({title}: AssistantProps) {
         }
     }, [isOpen]);
 
-    const { questions } = useAssistant();
+    const { questions, askQuestion } = useAssistant();
     useEffect(() => {
         if (questions.length > 0) {
             setIsOpen(true);
         }
     }, [questions]);
 
+    const switchChatbot = () => {
+        if (!isOpen && !wasOpened) {
+            setWasOpened(true);
+            askQuestion("Greetings 👋!");
+        }
+        setIsOpen(!isOpen)
+    }
+
     return (
         <>
             <button
-                onClick={() => setIsOpen(!isOpen)}
+                onClick={switchChatbot}
                 className={`fixed bottom-4 right-4 ${isOpen ? 'bg-black' : 'bg-accent'} text-white rounded-full p-4 shadow-lg z-10`}
             >
                 <BotMessageSquareIcon className="h-6 w-6" />
