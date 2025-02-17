@@ -1,9 +1,11 @@
 "use client";
 
-import React, { useEffect, useRef, JSX } from "react";
+import React, { useEffect, useRef, JSX, useState } from "react";
 import { BotMessageSquareIcon } from "lucide-react";
 import Image from "next/image";
 import { useAssistant } from "@/app/contexts/AssistantContext";
+import { useCompletion } from "@ai-sdk/react";
+import { pick } from "@/app/lib/utils";
 
 export interface PortfolioSectionProps {
   title: string;
@@ -17,7 +19,26 @@ export default function PortfolioSection({ title, description, imagePath, orient
     const sectionRef = useRef(null);
     const sectionImgRef = useRef(null);
 
+    const [lastQuestions, setLastQuestions] = useState<string[]>([]);
+
+    // @see: https://sdk.vercel.ai/docs/reference/ai-sdk-ui/use-chat
+    const { complete } = useCompletion({
+        api: 'api/writer',
+        onFinish: (prompt: string, completion: string) => {
+            setLastQuestions((prev) => [...prev, completion + '']);
+            askQuestion(completion)
+        },
+        onError: () => {
+            // Upon error, use previous completions instead
+            if (lastQuestions) {
+                askQuestion(pick(lastQuestions))
+            }
+        }
+    });
     const { askQuestion } = useAssistant();
+    const askTheAssistant = async () => {
+        await complete("Can you tell me more about David's " + title + "?");
+    }
 
     useEffect(() => {
         const handleScroll = () => {
@@ -54,9 +75,7 @@ export default function PortfolioSection({ title, description, imagePath, orient
                 <h2 className={`text-2xl font-semibold w-full text-center ${textAlignment}`}>{title}</h2>
                 <div className={`text-center ${textAlignment}`}>{description}</div>
                 <p>
-                    <button onClick={() => {
-                        askQuestion('Ask the assistant about: ' + title);
-                    }} className={`mt-4 px-4 py-2 ${btnBgColor} ${btnTextColor} rounded ${btnAccentColor} ${textAlignment}`}>
+                    <button onClick={askTheAssistant} className={`mt-4 px-4 py-2 ${btnBgColor} ${btnTextColor} rounded ${btnAccentColor} ${textAlignment}`}>
                         <BotMessageSquareIcon className="w-4 h-4 inline" /> Ask the assistant
                     </button>
                 </p>
