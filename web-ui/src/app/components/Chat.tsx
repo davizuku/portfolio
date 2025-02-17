@@ -10,8 +10,8 @@ import { useChat } from '@ai-sdk/react';
 import { UIMessage } from "ai";
 
 export function Chat() {
+    // @see: https://sdk.vercel.ai/docs/reference/ai-sdk-ui/use-chat
     const { messages, input, handleInputChange, handleSubmit, append } = useChat({
-        // @see: https://sdk.vercel.ai/docs/reference/ai-sdk-ui/use-chat
         api: 'api/agent',
     });
     const { questions, answerQuestion } = useAssistant();
