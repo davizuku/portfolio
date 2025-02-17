@@ -87,8 +87,8 @@ export default function Page() {
                     palette="secondary"
                 />
             </main>
-            <footer className="w-full max-w-4xl text-center mt-8 py-4 text-gray-600">
-                &copy; {new Date().getFullYear()} David Álvarez Pons. All rights reserved.
+            <footer className="w-full max-w-4xl text-center py-8 text-gray-600">
+                <span>&copy; {new Date().getFullYear()} David Álvarez Pons. All rights reserved.</span>
             </footer>
         </div>
     );
