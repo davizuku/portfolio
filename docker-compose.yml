@@ -1,0 +1,14 @@
+services:
+  web:
+    build:
+      dockerfile: Dockerfile
+      context: .
+    volumes:
+      - .:/usr/src/app
+      # - ./node_modules:/usr/src/app/node_modules
+    env_file:
+      - .env
+    working_dir: /usr/src/app
+    ports:
+      - "3000:3000"
+    command: ["npm", "run", "dev"]

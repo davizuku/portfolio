@@ -1,9 +1,18 @@
 
-run-web-ui:
-	@docker-compose up -d web-ui
+run: install
+	@docker-compose up -d web --build
 
-enter-web-ui:
-	@docker-compose exec -it web-ui bash
+install:
+	@docker-compose run web npm install
 
-enter-llm-agent:
-	@docker-compose exec -it llm-agent bash
+stop:
+	@docker-compose down web
+
+build: install
+	@docker-compose run web npm run build
+
+clean: stop
+	rm -rf node_modules .next
+
+bash:
+	@docker-compose exec -it web bash
