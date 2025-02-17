@@ -1,5 +1,5 @@
 import { createOpenRouter } from "@openrouter/ai-sdk-provider";
-import { CoreMessage, streamText } from 'ai';
+import { streamText } from 'ai';
 import { NextRequest, NextResponse } from "next/server";
 import fs from 'fs';
 import path from 'path';
