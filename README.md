@@ -45,3 +45,4 @@ This is the repository of David Álvarez Pons' portfolio, which can be visited i
 - Original example: https://github.com/jherr/deepseek-start
 - Other examples: https://github.com/openai/openai-realtime-agents
 - Portfolio template: https://github.com/chetanverma16/react-portfolio-template
+- Favicon: https://www.flaticon.es/iconos-gratis/codigo
