@@ -16,3 +16,6 @@ clean: stop
 
 bash:
 	@docker-compose exec -it web bash
+
+git-hooks:
+	echo "make build" > .git/pre-push

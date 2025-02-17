@@ -33,6 +33,12 @@ This is the repository of David Álvarez Pons' portfolio, which can be visited i
   make run
   ```
 
+### Recommended
+- Add `git-hooks` using the following command:
+  ```bash
+  make git-hooks
+  ```
+
 # References
 - LLM Provider: https://openrouter.ai
 - SDK Integration: https://sdk.vercel.ai/
