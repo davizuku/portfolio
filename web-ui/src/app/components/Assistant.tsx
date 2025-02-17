@@ -4,6 +4,7 @@ import React, { useEffect, useState } from "react";
 import { Chat } from "@/app/components/Chat"; // Import Chat component
 import { BotMessageSquareIcon, X } from "lucide-react";
 import { useAssistant } from "@/app/contexts/AssistantContext";
+import { useMediaQuery } from 'usehooks-ts'
 
 export interface AssistantProps {
     title: string;
@@ -13,8 +14,10 @@ export default function Assistant({title}: AssistantProps) {
 
     const [isOpen, setIsOpen] = useState(false);
 
+    const isMobile = useMediaQuery('(max-width: 768px)')
+
     useEffect(() => {
-        if (isOpen) {
+        if (isOpen && isMobile) {
             window.document.body.style.overflow = "hidden";
         } else {
             window.document.body.style.overflow = "auto";
