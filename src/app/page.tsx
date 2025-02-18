@@ -4,6 +4,7 @@ import Image from "next/image";
 import { FaLinkedin, FaGithub, FaCode } from "react-icons/fa"; // Import icons
 import PortfolioSection from "@/app/components/ui/portfolioSection";
 import PortfolioHeader from "@/app/components/ui/portfolioHeader";
+import PortfolioConnect from "./components/ui/portfolioConnect";
 
 export default function Page() {
 
@@ -86,6 +87,7 @@ export default function Page() {
                     orientation="left"
                     palette="secondary"
                 />
+                <PortfolioConnect title="Let's connect 🤝" description="If you got this far, there is a genuine interest. Let's have a conversation!"/>
             </main>
             <footer className="w-full max-w-4xl text-center py-8 text-gray-600">
                 <span>&copy; {new Date().getFullYear()} David Álvarez Pons. All rights reserved.</span>
