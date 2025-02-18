@@ -69,7 +69,7 @@ export default function Page() {
                     palette="secondary"
                 />
                 <PortfolioSection
-                    title="Projects"
+                    title="Completed Projects"
                     description="Showcasing AI, cloud computing, and software engineering expertise through hands-on projects."
                     imagePath="/img/projects.png"
                     orientation="right"
