@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 import Markdown from "react-markdown";
 import { Bot, MessageSquare, Send, User2 } from "lucide-react";
 import { Input } from "@/app/components/ui/input";
@@ -10,6 +10,8 @@ import { useChat } from '@ai-sdk/react';
 import { UIMessage } from "ai";
 
 export function Chat() {
+    const chatBottom = useRef<HTMLDivElement>(null);
+
     // @see: https://sdk.vercel.ai/docs/reference/ai-sdk-ui/use-chat
     const { messages, input, handleInputChange, handleSubmit, append } = useChat({
         api: 'api/agent',
@@ -22,6 +24,10 @@ export function Chat() {
         }
     }, [questions]);
 
+    useEffect(() => {
+        chatBottom.current?.scrollIntoView({ behavior: "smooth", block: "start", inline: "nearest" })
+    }, [messages]);
+
     return (
         <div className="h-full flex flex-col bg-gray-700">
             <div className="flex-grow overflow-y-auto">
@@ -30,6 +36,7 @@ export function Chat() {
                         .filter(({ role }) => role === "user" || role === "assistant")
                         .map((m) => <AIMessage key={m.id} message={m} />)}
                 </div>
+                <div ref={chatBottom} />
             </div>
 
             <div className="absolute bottom-0 left-0 right-0 p-4 bg-gray-800 border-t border-gray-700">
