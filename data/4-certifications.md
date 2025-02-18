@@ -6,6 +6,17 @@
 - Company: Amazon Web Services (AWS)
 - https://www.credly.com/badges/928a26c8-066c-4a35-9340-6bc80b774672
 
+### Skills
+- Amazon Web Services
+- Machine Learning
+- Data Engineering
+- Data Science
+- AWS SageMaker
+- Python
+- Artificial Intelligence
+- Critical Thinking
+- Problem Solving
+
 ## AWS Certified Machine Learning Specialty 2025 - Hands On!
 ### Metadata
 - Date: Jan 2025
