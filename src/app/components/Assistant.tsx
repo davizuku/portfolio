@@ -27,6 +27,7 @@ export default function Assistant({title}: AssistantProps) {
     const { questions, askQuestion } = useAssistant();
     useEffect(() => {
         if (questions.length > 0) {
+            setWasOpened(true);
             setIsOpen(true);
         }
     }, [questions]);
