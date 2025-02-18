@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useEffect, useRef, JSX, useState } from "react";
-import { BotMessageSquareIcon, Loader2 } from "lucide-react";
+import { Loader2, Plus } from "lucide-react";
 import Image from "next/image";
 import { useAssistant } from "@/app/contexts/AssistantContext";
 import { useCompletion } from "@ai-sdk/react";
@@ -115,8 +115,8 @@ function AskAssistantButton({ title, palette, textAlignment }: AskAssistantButto
     return (
         <button onClick={askTheAssistant} disabled={loading} className={`mt-4 px-4 py-2 ${bgColor} ${textColor} rounded ${accentColor} ${textAlignment}`}>
             { loading ?
-                <span><Loader2 className="w-4 h-4 inline animate-spin" /> Creating question...</span> :
-                <span><BotMessageSquareIcon className="w-4 h-4 inline" /> Ask the assistant</span>
+                <span><Loader2 className="w-4 h-4 inline animate-spin" /> Asking the assistant...</span> :
+                <span><Plus className="w-4 h-4 inline" /> More information</span>
             }
         </button>
     );
