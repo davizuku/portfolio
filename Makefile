@@ -11,6 +11,9 @@ stop:
 build: install
 	@docker-compose run --remove-orphans web npm run build
 
+init-db:
+	@docker-compose run --remove-orphans web npm run initDb
+
 clean: stop
 	rm -rf node_modules .next
 
