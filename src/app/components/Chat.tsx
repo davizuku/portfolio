@@ -10,7 +10,7 @@ import { useChat } from '@ai-sdk/react';
 import { UIMessage } from "ai";
 
 export function Chat() {
-    const chatBottom = useRef<HTMLDivElement>(null);
+    const messageContainer = useRef<HTMLDivElement>(null);
 
     // @see: https://sdk.vercel.ai/docs/reference/ai-sdk-ui/use-chat
     const { messages, input, handleInputChange, handleSubmit, append } = useChat({
@@ -25,18 +25,17 @@ export function Chat() {
     }, [questions]);
 
     useEffect(() => {
-        chatBottom.current?.scrollIntoView({ behavior: "smooth", block: "start", inline: "nearest" })
+        messageContainer.current?.scrollIntoView({ behavior: "smooth", block: "end", inline: "nearest" })
     }, [messages]);
 
     return (
         <div className="h-full flex flex-col bg-gray-700">
             <div className="flex-grow overflow-y-auto">
-                <div className="flex-1 p-4 container mx-auto max-w-4xl space-y-4 pb-32">
+                <div ref={messageContainer} className="flex-1 p-4 container mx-auto max-w-4xl space-y-4 pb-32">
                     {messages
                         .filter(({ role }) => role === "user" || role === "assistant")
                         .map((m) => <AIMessage key={m.id} message={m} />)}
                 </div>
-                <div ref={chatBottom} />
             </div>
 
             <div className="absolute bottom-0 left-0 right-0 p-4 bg-gray-800 border-t border-gray-700">
