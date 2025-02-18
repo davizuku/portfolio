@@ -17,5 +17,8 @@ clean: stop
 bash:
 	@docker-compose exec -it web bash
 
+postgres:
+	@docker-compose exec -it database bash
+
 git-hooks:
 	echo "make build" > .git/pre-push

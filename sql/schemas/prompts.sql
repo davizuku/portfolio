@@ -1,0 +1,9 @@
+DROP TABLE IF EXISTS prompts CASCADE;
+
+CREATE TABLE IF NOT EXISTS prompts (
+    id SERIAL NOT NULL,
+    name VARCHAR(255) UNIQUE,
+    content TEXT,
+    updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+    PRIMARY KEY (id)
+);

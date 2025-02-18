@@ -12,3 +12,21 @@ services:
     ports:
       - "3000:3000"
     command: ["npm", "run", "dev"]
+
+  # See: https://hub.docker.com/_/postgres
+  database:
+    image: postgres:15
+    restart: always
+    ports:
+      - 5432:5432
+    env_file:
+      - .env.dev
+    environment:
+      # This is needed in order to automatically create the database
+      POSTGRES_DB: ${POSTGRES_DATABASE}
+
+  adminer:
+    image: adminer
+    restart: always
+    ports:
+      - 8081:8080
