@@ -42,4 +42,6 @@ todo.md
 
 # sql
 sql/*.sql
+
+# data directory
 data
