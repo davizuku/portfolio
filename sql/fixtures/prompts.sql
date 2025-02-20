@@ -1,5 +1,5 @@
 INSERT INTO prompts (name, content) VALUES
-('system', 'General instructions for the system prompt'),
+('task', 'General instructions for the system prompt'),
 
 ('bio', '
 # Bio
