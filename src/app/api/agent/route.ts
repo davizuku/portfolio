@@ -1,20 +1,16 @@
 import { createOpenRouter } from "@openrouter/ai-sdk-provider";
 import { streamText } from 'ai';
 import { NextRequest, NextResponse } from "next/server";
-import fs from 'fs';
-import path from 'path';
+import { getPrompts } from "@/app/lib/modules/prompts/storage";
+import { Prompt } from "@/app/lib/modules/prompts/definitions"
 
 // @see: https://openrouter.ai/docs/community/frameworks#vercel-ai-sdk
 const openrouter = createOpenRouter({
   apiKey: process.env['OPEN_ROUTER_API_KEY'],
 });
 
-// Scan data folder for files of the form "\d-\w+\.md", concatenate all its contents using "\n" as separator into the systemPrompt variable.
-const dataFolderPath = path.join(process.cwd(), 'data');
-const filePattern = /^\d-\w+\.md$/;
-const files = fs.readdirSync(dataFolderPath).filter(file => filePattern.test(file));
-const fileContents = files.map(file => fs.readFileSync(path.join(dataFolderPath, file), 'utf-8'));
-const systemPrompt = fileContents.join('\n');
+const prompts = await getPrompts();
+const systemPrompt = prompts.map((p: Prompt) => p.content).join('\n');
 
 // Allow streaming responses up to 30 seconds
 export const maxDuration = 30;
