@@ -13,6 +13,7 @@ export async function getPrompts(): Promise<Prompt[]> {
         const data = await client.query(`
             SELECT id, name, content, updated_at
             FROM prompts
+            ORDER BY id
         `);
         return data.rows;
     } catch (error) {
