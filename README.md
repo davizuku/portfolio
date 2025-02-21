@@ -27,7 +27,7 @@ For the main web application, I have chosen Typescript + Next.js + Vercel + Post
 After trying a side-docker with Ollama, its performance was not good on my local laptop, nor I found a free hosting for such type of workload. As a consequence, for the LLM integration, I tried OpenRouter because it offered an affordable access to a big variety of models as well a quick interface to test different system prompts.
 
 After testing multiple models I chose:
-- `google/gemini-flash-1.5-8b` ([link](https://openrouter.ai/google/gemini-flash-1.5-8b)): For the conversation generation and the augmented retrieval. Chosen by a good tradeoff between price, context, and results. The amount of information from my profile is roughly above 15k tokens, which easily fits into most LLMs. This way, the results were acceptable for a quick prototype, it can become more complex in the future.
+- `google/gemini-flash-1.5-8b` ([link](https://openrouter.ai/google/gemini-flash-1.5-8b)): For the conversation generation and the augmented retrieval. Chosen by a good tradeoff between price, context, and results. The amount of information from my profile is roughly above 15k tokens, which easily fits into most LLMs. This way, the results were acceptable for a quick prototype, it can become more complex in the future. This technique is inspired in the paper _Don’t Do RAG: When Cache-Augmented Generation is All You Need for Knowledge Tasks (Chan et al., 2024)_ ([doc](https://arxiv.org/abs/2412.15605)).
 - `liquid/lfm-7b` ([link](https://openrouter.ai/liquid/lfm-7b)): For rephrasing call-to-action strings. This model did not require a big context window and it is cheaper than other models with lower context.
 
 [<img src="doc/img/openrouterai.png" alt="OpenRouter AI" width="50px">](https://openrouter.ai/)
@@ -72,3 +72,8 @@ After testing multiple models I chose:
 - Other examples: https://github.com/openai/openai-realtime-agents
 - Portfolio template: https://github.com/chetanverma16/react-portfolio-template
 - Favicon: https://www.flaticon.es/iconos-gratis/codigo
+
+# Future work
+- Tool integration
+- Analytics on message conversations
+- Automatic fetching from LinkedIn
