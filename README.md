@@ -31,8 +31,8 @@ After testing multiple models I chose:
 - `liquid/lfm-7b` ([link](https://openrouter.ai/liquid/lfm-7b)): For rephrasing call-to-action strings. This model did not require a big context window and it is cheaper than other models with lower context.
 
 [<img src="doc/img/openrouterai.png" alt="OpenRouter AI" width="50px">](https://openrouter.ai/)
-[<img src="doc/img/gemini.png" alt="Gemini" width="50px">](https://gemini.google.com/)
-[<img src="doc/img/liquidai.jpg" alt="Liquid AI" width="50px">](https://www.liquid.ai/)
+[<img src="doc/img/gemini.png" alt="Gemini" height="50px">](https://gemini.google.com/)
+[<img src="doc/img/liquidai.jpg" alt="Liquid AI" height="50px">](https://www.liquid.ai/)
 
 ## Development
 
