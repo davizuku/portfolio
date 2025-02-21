@@ -7,9 +7,13 @@ import { Input } from "@/app/components/ui/input";
 import { Button } from "@/app/components/ui/button";
 import { useAssistant } from "@/app/contexts/AssistantContext";
 import { useChat } from '@ai-sdk/react';
-import { UIMessage } from "ai";
+import { Message, UIMessage } from "ai";
 
-export function Chat() {
+export interface ChatProps {
+    onMessageReceived?: (m: Message[]) => void;
+}
+
+export function Chat({ onMessageReceived }: ChatProps) {
     const messageContainer = useRef<HTMLDivElement>(null);
 
     // @see: https://sdk.vercel.ai/docs/reference/ai-sdk-ui/use-chat
@@ -26,6 +30,7 @@ export function Chat() {
 
     useEffect(() => {
         messageContainer.current?.scrollIntoView({ behavior: "smooth", block: "end", inline: "nearest" })
+        if (onMessageReceived) onMessageReceived(messages);
     }, [messages]);
 
     return (

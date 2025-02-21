@@ -5,6 +5,8 @@ import { Chat } from "@/app/components/Chat"; // Import Chat component
 import { BotMessageSquareIcon, X } from "lucide-react";
 import { useAssistant } from "@/app/contexts/AssistantContext";
 import { useMediaQuery } from 'usehooks-ts'
+import { startConversation, updateConversation } from "@/app/lib/modules/conversations/actions";
+import { Message } from "ai";
 
 export interface AssistantProps {
     title: string;
@@ -13,8 +15,25 @@ export interface AssistantProps {
 export default function Assistant({title}: AssistantProps) {
     const [wasOpened, setWasOpened] = useState(false);
     const [isOpen, setIsOpen] = useState(false);
+    const [conversationId, setConversationId] = useState("");
 
     const isMobile = useMediaQuery('(max-width: 768px)')
+
+    const onMessageReceived = (messages: Message[]) => {
+        if (conversationId) {
+            updateConversation(conversationId, messages);
+        }
+    }
+
+    useEffect(() => {
+        if (wasOpened) {
+            const initConversation = async () => {
+                const conversationId = await startConversation();
+                setConversationId(conversationId);
+            }
+            initConversation().catch(console.error);
+        }
+    }, [wasOpened]);
 
     useEffect(() => {
         if (isOpen && isMobile) {
@@ -58,7 +77,7 @@ export default function Assistant({title}: AssistantProps) {
                         </button>
                     </div>
                     <div className="flex-grow overflow-y-auto">
-                        <Chat />
+                        <Chat onMessageReceived={onMessageReceived}/>
                     </div>
                 </div>
             </div>
