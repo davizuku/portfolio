@@ -13,6 +13,9 @@ install: ## Install dependencies inside the Docker container
 stop: ## Stop the Docker container
 	@docker-compose down web
 
+log: ## Show application logs and follow output
+	@docker-compose logs -f web
+
 build: install ## Build the application
 	@docker-compose run --remove-orphans web npm run build
 
