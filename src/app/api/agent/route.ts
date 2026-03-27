@@ -19,7 +19,7 @@ const chatChain = ChatPromptTemplate.fromMessages([
   new MessagesPlaceholder("messages"),
 ]);
 
-function normalizeMessage(message: BaseMessage[]) {
+function normalizeMessage(message: any) {
   let role: string;
   let content: string;
   const roleMap: any = {
