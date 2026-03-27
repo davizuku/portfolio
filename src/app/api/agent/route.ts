@@ -47,7 +47,7 @@ const openRouterRunnable = RunnableLambda.from(async (promptMessages: any) => {
     model: openrouter(model),
     system: systemMessage?.content ?? '',
     temperature: 0.5,
-    maxTokens: 1000,
+    maxOutputTokens: 1000,
     messages: userMessages,
     onError: ({ error }) => {
       console.error(`An error occurred while generating text in api/agent for prompt: '${JSON.stringify(userMessages)}': ${error}`);
@@ -61,6 +61,7 @@ function getModelName() {
   let model = "";
   // TODO: add fallback to paid model when rate limit reached
   model = "nvidia/nemotron-3-super-120b-a12b:free"
+  model = "google/gemini-2.0-flash-001" // Pay 0.10 -> 0.40
   model = "mistralai/mistral-small-3.2-24b-instruct" // Pay 0.075 -> 0.20
   return model;
 }
@@ -73,11 +74,12 @@ export async function POST(req: NextRequest) {
     const { messages } = await req.json();
     const prompts = await getPrompts();
     const systemPrompt = prompts.map((p: Prompt) => p.content).join('\n');
+    console.log("messages: " + messages);
 
     const chain = chatChain.pipe(openRouterRunnable);
     const result = await chain.invoke({ system_prompt: systemPrompt, messages });
 
-    return result.toDataStreamResponse();
+    return result.toUIMessageStreamResponse();
   } catch (error: any) {
     console.error("Error in /api/agent:", error);
     return NextResponse.json({ error: error.message }, { status: 500 });

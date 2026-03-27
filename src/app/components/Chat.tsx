@@ -1,29 +1,38 @@
 "use client";
 
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import Markdown from "react-markdown";
 import { Bot, MessageSquare, Send, User2 } from "lucide-react";
 import { Input } from "@/app/components/ui/input";
 import { Button } from "@/app/components/ui/button";
 import { useAssistant } from "@/app/contexts/AssistantContext";
 import { useChat } from '@ai-sdk/react';
-import { Message, UIMessage } from "ai";
+import { DefaultChatTransport, UIMessage } from "ai";
 
 export interface ChatProps {
-    onMessageReceived?: (m: Message[]) => void;
+    onMessageReceived?: (m: UIMessage[]) => void;
 }
 
 export function Chat({ onMessageReceived }: ChatProps) {
+    const [input, setInput] = useState('');
     const messageContainer = useRef<HTMLDivElement>(null);
 
     // @see: https://sdk.vercel.ai/docs/reference/ai-sdk-ui/use-chat
-    const { messages, input, handleInputChange, handleSubmit, append } = useChat({
-        api: 'api/agent',
+    const { messages, sendMessage } = useChat({
+        transport: new DefaultChatTransport({
+            api: 'api/agent'
+        })
     });
+    const handleSubmit = (e:any) => {
+        e.preventDefault();
+        sendMessage({ text: input });
+        setInput('');
+    };
+
     const { questions, answerQuestion } = useAssistant();
     useEffect(() => {
         if (questions.length > 0) {
-            append({ role: "user", content: questions[0] })
+            sendMessage({ role: "user", parts: [{type: "text", text: questions[0]}] })
             answerQuestion();
         }
     }, [questions]);
@@ -53,7 +62,7 @@ export function Chat({ onMessageReceived }: ChatProps) {
                                 className="flex-1 bg-gray-900 border-gray-700 text-gray-100 pl-10"
                                 value={input}
                                 placeholder="Ask the assistant..."
-                                onChange={handleInputChange}
+                                onChange={e => setInput(e.target.value)}
                             />
                         </div>
                         <Button
@@ -72,6 +81,7 @@ export function Chat({ onMessageReceived }: ChatProps) {
 }
 
 const AIMessage: React.FC<{ message: UIMessage }> = ({ message }) => {
+    const messageText = message.parts.filter(p => p.type === 'text').map(p => p.text).join();
     return (
         <div
             className={`flex ${message.role === "user" ? "justify-end" : "justify-start"}`}
@@ -94,7 +104,7 @@ const AIMessage: React.FC<{ message: UIMessage }> = ({ message }) => {
                         : "prose-invert prose-p:text-gray-100 prose-headings:text-gray-100 prose-strong:text-gray-100 prose-li:text-gray-100"
                         }`}
                 >
-                    <Markdown>{message.content}</Markdown>
+                    <Markdown>{messageText}</Markdown>
                 </article>
             </div>
         </div>

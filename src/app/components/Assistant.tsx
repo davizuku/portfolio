@@ -1,12 +1,12 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { Chat } from "@/app/components/Chat"; // Import Chat component
 import { BotMessageSquareIcon, X } from "lucide-react";
 import { useAssistant } from "@/app/contexts/AssistantContext";
 import { useMediaQuery } from 'usehooks-ts'
 import { startConversation, updateConversation } from "@/app/lib/modules/conversations/actions";
-import { Message } from "ai";
+import { UIMessage } from "ai";
 
 export interface AssistantProps {
     title: string;
@@ -19,9 +19,10 @@ export default function Assistant({title}: AssistantProps) {
 
     const isMobile = useMediaQuery('(max-width: 768px)')
 
-    const onMessageReceived = (messages: Message[]) => {
+    const onMessageReceived = (messages: UIMessage[]) => {
         if (conversationId) {
-            updateConversation(conversationId, messages);
+            // TODO: Uncommenting this line leads to a massive number of database client errors.
+            // updateConversation(conversationId, messages);
         }
     }
 

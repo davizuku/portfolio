@@ -1,6 +1,6 @@
 
 import { getDatabaseConnection } from "@/app/lib/server-utils";
-import { Message } from "ai";
+import { UIMessage } from "ai";
 
 export async function createConversation(metadata: any): Promise<string> {
     try {
@@ -19,10 +19,10 @@ export async function createConversation(metadata: any): Promise<string> {
     }
 }
 
-export async function updateMessages(conversationId: string, messages: Message[]) {
+export async function updateMessages(conversationId: string, messages: UIMessage[]) {
     try {
-        const strMessages = JSON.stringify(messages.map((m: Message) => {
-            return { "role": m.role, "content": m.content }
+        const strMessages = JSON.stringify(messages.map((m: UIMessage) => {
+            return { "role": m.role, "content": m.parts.filter(p => p.type === 'text').map(p => p.text).join() }
         }));
         const client = await getDatabaseConnection();
         await client.connect();

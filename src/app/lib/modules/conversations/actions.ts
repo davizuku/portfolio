@@ -3,7 +3,7 @@
 import { cookies, headers } from "next/headers";
 import { userAgent } from "next/server";
 import { createConversation, updateMessages } from "@/app/lib/modules/conversations/storage";
-import { Message } from "ai";
+import { UIMessage } from "ai";
 
 export async function startConversation(): Promise<string> {
     const [headersList, cookieStore] = await Promise.all([
@@ -22,6 +22,6 @@ export async function startConversation(): Promise<string> {
     return conversationId;
 }
 
-export async function updateConversation(conversationId: string, messages: Message[]) {
+export async function updateConversation(conversationId: string, messages: UIMessage[]) {
     await updateMessages(conversationId, messages);
 }
