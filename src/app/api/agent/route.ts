@@ -2,15 +2,25 @@ import { createOpenRouter } from "@openrouter/ai-sdk-provider";
 import { streamText } from 'ai';
 import { NextRequest, NextResponse } from "next/server";
 import { getPrompts } from "@/app/lib/modules/prompts/storage";
-import { Prompt } from "@/app/lib/modules/prompts/definitions"
+import { Prompt } from "@/app/lib/modules/prompts/definitions";
+import { ChatPromptTemplate, SystemMessagePromptTemplate } from "langchain/prompts";
 
 // @see: https://openrouter.ai/docs/community/frameworks#vercel-ai-sdk
 const openrouter = createOpenRouter({
   apiKey: process.env['OPEN_ROUTER_API_KEY'],
 });
 
-const prompts = await getPrompts();
-const systemPrompt = prompts.map((p: Prompt) => p.content).join('\n');
+async function buildSystemPrompt() {
+  const prompts = await getPrompts();
+  const promptText = prompts.map((p: Prompt) => p.content).join('\n');
+
+  const systemTemplate = ChatPromptTemplate.fromPromptMessages([
+    SystemMessagePromptTemplate.fromTemplate("{system_prompt}"),
+  ]);
+
+  // Use LangChain for prompt orchestration
+  return systemTemplate.format({ system_prompt: promptText });
+}
 
 // Allow streaming responses up to 30 seconds
 export const maxDuration = 30;
@@ -19,11 +29,13 @@ export const maxDuration = 30;
 export async function POST(req: NextRequest) {
   try {
     const { messages } = await req.json();
+    const systemPrompt = await buildSystemPrompt();
+
     let model = "";
     // TODO: add fallback to paid model when rate limit reached
     model = "google/gemini-2.0-flash-001"; // Pay 0.1 -> 0.4
     model = 'sophosympatheia/rogue-rose-103b-v0.2:free';
-    model = "deepseek/deepseek-r1-distill-llama-70b:free"
+    model = "deepseek/deepseek-r1-distill-llama-70b:free";
     model = "deepseek/deepseek-r1-distill-llama-8b"; // Pay 0.04 -> 0.04
     model = "mistralai/mistral-nemo"  // Pay 0.035 -> 0.08
     model = "google/gemini-2.0-flash-lite-preview-02-05:free";
@@ -42,6 +54,7 @@ export async function POST(req: NextRequest) {
         console.error(`An error occurred while generating text in api/agent for prompt: '${JSON.stringify(messages)}': ${error}`);
       }
     });
+
     return result.toDataStreamResponse();
   } catch (error: any) {
     console.error("Error in /api/agent:", error);

@@ -15,6 +15,7 @@
     "@tailwindcss/typography": "^0.5.16",
     "@types/pg": "^8.11.11",
     "ai": "^4.1.41",
+    "langchain": "^1.2.37",
     "class-variance-authority": "^0.7.1",
     "dotenv": "^16.4.7",
     "lucide-react": "^0.474.0",
