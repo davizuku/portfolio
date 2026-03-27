@@ -17,7 +17,7 @@ export async function POST(req: NextRequest) {
     let model = "";
     // TODO: add fallback to paid model when rate limit reached
     // model = "mistralai/mistral-small-24b-instruct-2501:free";
-    model = "liquid/lfm-7b"; // Pay 0.01 -> 0.01
+    model = "mistralai/mistral-nemo"; // Pay 0.02 -> 0.04
     // @see: https://sdk.vercel.ai/docs/reference/ai-sdk-core/stream-text
     const result = streamText({
       model: openrouter(model),
@@ -26,6 +26,7 @@ export async function POST(req: NextRequest) {
         "You write simple, clear, and concise content. ",
         "Your tone is warm and professional. ",
         "When asked for rephrasing a sentence, do not show alternatives, i.e. directly write one of the alternatives.",
+        "Do not quote the result. "
       ].join(' '),
       temperature: 0.5,
       prompt: "Rephrase into a new sentence the following one: '" + prompt + "'",
@@ -33,7 +34,7 @@ export async function POST(req: NextRequest) {
         console.error(`An error occurred while generating text in api/writer for prompt: '${prompt}': ${error}`);
       }
     });
-    return result.toDataStreamResponse();
+    return result.toUIMessageStreamResponse();
   } catch (error: any) {
     console.error("Error in /api/agent:", error);
     return NextResponse.json({ error: error.message }, { status: 500 });
