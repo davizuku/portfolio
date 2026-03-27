@@ -1,10 +1,13 @@
 import { createOpenRouter } from "@openrouter/ai-sdk-provider";
-import { streamText } from 'ai';
+import { ModelMessage, streamText } from 'ai';
+import { toBaseMessages } from '@ai-sdk/langchain';
 import { NextRequest, NextResponse } from "next/server";
 import { getPrompts } from "@/app/lib/modules/prompts/storage";
 import { Prompt } from "@/app/lib/modules/prompts/definitions";
 import { ChatPromptTemplate, MessagesPlaceholder, SystemMessagePromptTemplate } from "@langchain/core/prompts";
 import { RunnableLambda } from "@langchain/core/runnables";
+import { ChatPromptValue } from "@langchain/core/prompt_values";
+import { BaseMessage } from "@langchain/core/messages";
 
 // @see: https://openrouter.ai/docs/community/frameworks#vercel-ai-sdk
 const openrouter = createOpenRouter({
@@ -16,28 +19,38 @@ const chatChain = ChatPromptTemplate.fromMessages([
   new MessagesPlaceholder("messages"),
 ]);
 
-function normalizeMessage(message: any) {
+function normalizeMessage(message: BaseMessage[]) {
+  let role: string;
+  let content: string;
+  const roleMap: any = {
+    'human': 'user',
+    'ai': 'assistant',
+  }
   if (message == null || typeof message !== 'object') {
-    return { role: 'user', content: String(message ?? '') };
+    role = 'user';
+    content = String(message ?? '');
   }
-  if (typeof message.content === 'string') {
-    return { role: message.role ?? message.type ?? 'user', content: message.content };
+  else if (typeof message.content === 'string') {
+    role = message.role ?? message.type ?? 'user';
+    content = message.content;
   }
-  if (Array.isArray(message.content)) {
-    return {
-      role: message.role ?? message.type ?? 'user',
-      content: message.content.map((block: any) => typeof block === 'string' ? block : block?.text ?? '').join(''),
-    };
+  else if (Array.isArray(message.content)) {
+    role = message.role ?? message.type ?? 'user';
+    content = message.content.map((block: any) => typeof block === 'string' ? block : block?.text ?? '').join('');
   }
-  return {
-    role: message.role ?? message.type ?? 'user',
-    content: String(message.content ?? ''),
-  };
+  else {
+    role = message.role ?? message.type ?? 'user';
+    content = String(message.content ?? '');
+  }
+  if (role in roleMap) {
+    role = String(roleMap[role]);
+  }
+  return {role: role, content: content} as ModelMessage;
 }
 
-const openRouterRunnable = RunnableLambda.from(async (promptMessages: any) => {
-  const messagesArray = Array.isArray(promptMessages) ? promptMessages : [promptMessages];
-  const normalized = messagesArray.map(normalizeMessage);
+const openRouterRunnable = RunnableLambda.from(async (promptMessages: ChatPromptValue) => {
+  const messages: BaseMessage[] = promptMessages.toChatMessages()
+  const normalized: ModelMessage[] = messages.map(normalizeMessage);
   const systemMessage = normalized.find((msg) => msg.role === 'system');
   const userMessages = normalized.filter((msg) => msg.role !== 'system');
 
@@ -72,14 +85,12 @@ export const maxDuration = 30;
 export async function POST(req: NextRequest) {
   try {
     const { messages } = await req.json();
+    const modelMessages = await toBaseMessages(messages)
     const prompts = await getPrompts();
     const systemPrompt = prompts.map((p: Prompt) => p.content).join('\n');
-    console.log("messages: " + messages);
-
     const chain = chatChain.pipe(openRouterRunnable);
-    const result = await chain.invoke({ system_prompt: systemPrompt, messages });
-
-    return result.toUIMessageStreamResponse();
+    const result = await chain.invoke({ system_prompt: systemPrompt, messages: modelMessages });
+    return result.toUIMessageStreamResponse()
   } catch (error: any) {
     console.error("Error in /api/agent:", error);
     return NextResponse.json({ error: error.message }, { status: 500 });
