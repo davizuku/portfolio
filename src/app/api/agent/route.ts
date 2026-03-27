@@ -60,15 +60,8 @@ const openRouterRunnable = RunnableLambda.from(async (promptMessages: any) => {
 function getModelName() {
   let model = "";
   // TODO: add fallback to paid model when rate limit reached
-  model = "google/gemini-2.0-flash-001"; // Pay 0.1 -> 0.4
-  model = 'sophosympatheia/rogue-rose-103b-v0.2:free';
-  model = "deepseek/deepseek-r1-distill-llama-70b:free";
-  model = "deepseek/deepseek-r1-distill-llama-8b"; // Pay 0.04 -> 0.04
-  model = "mistralai/mistral-nemo"  // Pay 0.035 -> 0.08
-  model = "google/gemini-2.0-flash-lite-preview-02-05:free";
-  model = "mistralai/ministral-8b" // Pay 0.1 -> 0.1
-  model = "meta-llama/llama-3.2-1b-instruct" // Pay 0.01 -> 0.01
-  model = "google/gemini-flash-1.5-8b" // Pay 0.075 -> 0.3
+  model = "nvidia/nemotron-3-super-120b-a12b:free"
+  model = "mistralai/mistral-small-3.2-24b-instruct" // Pay 0.075 -> 0.20
   return model;
 }
 
