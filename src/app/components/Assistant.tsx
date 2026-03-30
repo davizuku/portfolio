@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Chat } from "@/app/components/Chat"; // Import Chat component
 import { BotMessageSquareIcon, X } from "lucide-react";
 import { useAssistant } from "@/app/contexts/AssistantContext";
@@ -16,14 +16,35 @@ export default function Assistant({title}: AssistantProps) {
     const [wasOpened, setWasOpened] = useState(false);
     const [isOpen, setIsOpen] = useState(false);
     const [conversationId, setConversationId] = useState("");
+    const [pendingMessages, setPendingMessages] = useState<UIMessage[]>([]);
 
     const isMobile = useMediaQuery('(max-width: 768px)')
 
-    const onMessageReceived = (messages: UIMessage[]) => {
-        if (conversationId) {
-            // TODO: Uncommenting this line leads to a massive number of database client errors.
-            // updateConversation(conversationId, messages);
+    const conversationIdRef = useRef(conversationId);
+    const pendingMessagesRef = useRef<UIMessage[]>([]);
+
+    useEffect(() => {
+        conversationIdRef.current = conversationId;
+    }, [conversationId]);
+
+    useEffect(() => {
+        pendingMessagesRef.current = pendingMessages;
+    }, [pendingMessages]);
+
+    const saveConversation = async () => {
+        if (!conversationIdRef.current || pendingMessagesRef.current.length === 0) {
+            return;
         }
+
+        try {
+            await updateConversation(conversationIdRef.current, pendingMessagesRef.current);
+        } catch (error) {
+            console.error('Failed to save conversation on close:', error);
+        }
+    };
+
+    const onMessageReceived = (messages: UIMessage[]) => {
+        setPendingMessages(messages);
     }
 
     useEffect(() => {
@@ -44,6 +65,26 @@ export default function Assistant({title}: AssistantProps) {
         }
     }, [isOpen]);
 
+    useEffect(() => {
+        const handleBeforeUnload = () => {
+            if (!conversationIdRef.current || pendingMessagesRef.current.length === 0) {
+                return;
+            }
+
+            const data = JSON.stringify({
+                conversationId: conversationIdRef.current,
+                messages: pendingMessagesRef.current,
+            });
+            navigator.sendBeacon(
+                '/api/conversations/save',
+                new Blob([data], { type: 'application/json' }),
+            );
+        };
+
+        window.addEventListener('beforeunload', handleBeforeUnload);
+        return () => window.removeEventListener('beforeunload', handleBeforeUnload);
+    }, []);
+
     const { questions, askQuestion } = useAssistant();
     useEffect(() => {
         if (questions.length > 0) {
@@ -52,12 +93,22 @@ export default function Assistant({title}: AssistantProps) {
         }
     }, [questions]);
 
-    const switchChatbot = () => {
-        if (!isOpen && !wasOpened) {
+    const closeChat = async () => {
+        await saveConversation();
+        setIsOpen(false);
+    }
+
+    const switchChatbot = async () => {
+        if (isOpen) {
+            await closeChat();
+            return;
+        }
+
+        if (!wasOpened) {
             setWasOpened(true);
             askQuestion("Greetings 👋!");
         }
-        setIsOpen(!isOpen)
+        setIsOpen(true);
     }
 
     return (
@@ -73,7 +124,7 @@ export default function Assistant({title}: AssistantProps) {
                 <div className="flex flex-col h-full">
                     <div className="flex justify-between items-center p-4 bg-accent border-b border-gray-700">
                         <h2 className="text-lg md:text-xl text-primary">{title}</h2>
-                        <button onClick={() => setIsOpen(false)}>
+                        <button onClick={closeChat}>
                             <X className="h-6 w-6 text-primary" />
                         </button>
                     </div>

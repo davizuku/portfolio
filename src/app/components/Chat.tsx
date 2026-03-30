@@ -39,7 +39,6 @@ export function Chat({ onMessageReceived }: ChatProps) {
 
     useEffect(() => {
         messageContainer.current?.scrollIntoView({ behavior: "smooth", block: "end", inline: "nearest" })
-        // TODO: find a better place to log messages to avoid overload the DB
         if (onMessageReceived) onMessageReceived(messages);
     }, [messages]);
 

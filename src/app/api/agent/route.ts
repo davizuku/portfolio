@@ -4,6 +4,7 @@ import { toBaseMessages } from '@ai-sdk/langchain';
 import { NextRequest, NextResponse } from "next/server";
 import { getPrompts } from "@/app/lib/modules/prompts/storage";
 import { Prompt } from "@/app/lib/modules/prompts/definitions";
+import { normalizeMessage } from "@/app/lib/message-utils";
 import { ChatPromptTemplate, MessagesPlaceholder, SystemMessagePromptTemplate } from "@langchain/core/prompts";
 import { RunnableLambda } from "@langchain/core/runnables";
 import { ChatPromptValue } from "@langchain/core/prompt_values";
@@ -19,34 +20,6 @@ const chatChain = ChatPromptTemplate.fromMessages([
   new MessagesPlaceholder("messages"),
 ]);
 
-function normalizeMessage(message: any) {
-  let role: string;
-  let content: string;
-  const roleMap: any = {
-    'human': 'user',
-    'ai': 'assistant',
-  }
-  if (message == null || typeof message !== 'object') {
-    role = 'user';
-    content = String(message ?? '');
-  }
-  else if (typeof message.content === 'string') {
-    role = message.role ?? message.type ?? 'user';
-    content = message.content;
-  }
-  else if (Array.isArray(message.content)) {
-    role = message.role ?? message.type ?? 'user';
-    content = message.content.map((block: any) => typeof block === 'string' ? block : block?.text ?? '').join('');
-  }
-  else {
-    role = message.role ?? message.type ?? 'user';
-    content = String(message.content ?? '');
-  }
-  if (role in roleMap) {
-    role = String(roleMap[role]);
-  }
-  return {role: role, content: content} as ModelMessage;
-}
 
 const openRouterRunnable = RunnableLambda.from(async (promptMessages: ChatPromptValue) => {
   const messages: BaseMessage[] = promptMessages.toChatMessages()
