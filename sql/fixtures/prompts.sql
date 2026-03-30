@@ -1,13 +1,15 @@
 INSERT INTO prompts (name, content) VALUES
-('task', 'General instructions for the system prompt'),
+('task', $prompt$
+General instructions for the system prompt
+$prompt$),
 
-('bio', '
+('bio', $prompt$
 # Bio
 
 <A short description of your profile>
-'),
+$prompt$),
 
-('experience', '
+('experience', $prompt$
 # Experience
 ## <First Position>
 ### Metadata
@@ -30,10 +32,10 @@ INSERT INTO prompts (name, content) VALUES
 ## <Second Position>
 ...
 
-'),
+$prompt$),
 
 
-('projects', '
+('projects', $prompt$
 # Projects
 ## <Project Title>
 ### Metadata
@@ -53,9 +55,9 @@ INSERT INTO prompts (name, content) VALUES
 - <Second skill>
 ...
 
-'),
+$prompt$),
 
-('certifications', '
+('certifications', $prompt$
 # Certifications
 ## <Certification name>
 ### Metadata
@@ -69,10 +71,10 @@ INSERT INTO prompts (name, content) VALUES
 - <Second skill>
 ...
 
-'),
+$prompt$),
 
 
-('recommendations', '
+('recommendations', $prompt$
 # Recommendations
 ## <Name of the recommender>
 ### Metadata
@@ -84,4 +86,4 @@ INSERT INTO prompts (name, content) VALUES
 
 <text of the recommendation>
 
-');
+$prompt$);
