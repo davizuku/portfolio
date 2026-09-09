@@ -77,6 +77,10 @@ export default function Page() {
                     imagePath="/img/projects.png"
                     orientation="right"
                     palette="primary"
+                    exampleQuestions={[
+                        "How many projects has David developed in PHP and Python?",
+                        "Tell me more about Javascript/Node projects.",
+                    ]}
                 />
                 <PortfolioSection
                     title="Skills"
