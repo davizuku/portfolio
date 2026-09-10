@@ -47,6 +47,7 @@ export default function PortfolioSection({ title, description, imagePath, orient
     const itemsAlignment = orientation == 'left' ? 'md:items-start' : 'md:items-end';
     const bgColor = palette == 'primary' ? 'bg-primary' : 'bg-secondary';
     const textColor = palette == 'primary' ? 'text-secondary' : 'text-primary';
+    const exampleQuestionsPalette = palette == 'primary' ? 'secondary' : 'primary';
 
     return (
         <section id="experience" ref={sectionRef}
@@ -75,7 +76,7 @@ export default function PortfolioSection({ title, description, imagePath, orient
                                     key={question}
                                     displayText={question}
                                     question={question}
-                                    palette={palette ?? "primary"}
+                                    palette={exampleQuestionsPalette}
                                     textAlignment={textAlignment}
                                 />
                             ))}
