@@ -1,6 +1,7 @@
 import { createOpenRouter } from "@openrouter/ai-sdk-provider";
 import { streamText } from 'ai';
 import { NextRequest, NextResponse } from "next/server";
+import { getOpenRouterModel } from "@/app/lib/model-config";
 
 // @see: https://openrouter.ai/docs/community/frameworks#vercel-ai-sdk
 const openrouter = createOpenRouter({
@@ -14,13 +15,9 @@ export const maxDuration = 30;
 export async function POST(req: NextRequest) {
   try {
     const { prompt } = await req.json();
-    let model = "";
-    // TODO: add fallback to paid model when rate limit reached
-    // model = "mistralai/mistral-small-24b-instruct-2501:free";
-    model = "mistralai/mistral-nemo"; // Pay 0.02 -> 0.04
     // @see: https://sdk.vercel.ai/docs/reference/ai-sdk-core/stream-text
     const result = streamText({
-      model: openrouter(model),
+      model: openrouter(getOpenRouterModel()),
       system: [
         "You are an expert hiring manager. ",
         "You write simple, clear, and concise content. ",

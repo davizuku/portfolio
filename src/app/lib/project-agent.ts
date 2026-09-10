@@ -2,6 +2,7 @@ import { ChatOpenAI } from "@langchain/openai";
 import { createAgent, tool } from "langchain";
 import { z } from "zod";
 import { getDatabaseConnection } from "@/app/lib/server-utils";
+import { getOpenRouterModel } from "@/app/lib/model-config";
 
 const projectTerms = /\b(projects?|developed|built|tech(?:nologies|nology)?|php|python|javascript|node(?:\.js)?|typescript)\b/i;
 
@@ -46,7 +47,7 @@ function createProjectAgent() {
   );
 
   const model = new ChatOpenAI({
-    model: "qwen/qwen3.7-flash",
+    model: getOpenRouterModel(),
     apiKey: process.env.OPEN_ROUTER_API_KEY,
     temperature: 0,
     maxTokens: 800,

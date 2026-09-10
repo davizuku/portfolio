@@ -5,18 +5,12 @@ import { getPrompts } from "@/app/lib/modules/prompts/storage";
 import { Prompt } from "@/app/lib/modules/prompts/definitions";
 import { normalizeMessage } from "@/app/lib/message-utils";
 import { getProjectContext, isProjectQuery } from "@/app/lib/project-agent";
+import { getOpenRouterModel } from "@/app/lib/model-config";
 
 // @see: https://openrouter.ai/docs/community/frameworks#vercel-ai-sdk
 const openrouter = createOpenRouter({
   apiKey: process.env['OPEN_ROUTER_API_KEY'],
 });
-
-function getModelName() {
-  let model = "";
-  // TODO: add fallback to paid model when rate limit reached
-  model = "qwen/qwen3.7-flash" // Pay 0.03 -> 0.13 (ctxt: 1M)
-  return model;
-}
 
 // Allow streaming responses up to 30 seconds
 export const maxDuration = 30;
@@ -42,7 +36,7 @@ export async function POST(req: NextRequest) {
     }
 
     const result = streamText({
-      model: openrouter(getModelName()),
+      model: openrouter(getOpenRouterModel()),
       system: systemPrompt,
       temperature: 0.5,
       maxOutputTokens: 1000,
