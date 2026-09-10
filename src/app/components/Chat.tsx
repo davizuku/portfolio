@@ -18,11 +18,10 @@ export function Chat({ onMessageReceived }: ChatProps) {
     const messageContainer = useRef<HTMLDivElement>(null);
 
     // @see: https://sdk.vercel.ai/docs/reference/ai-sdk-ui/use-chat
-    const { messages, sendMessage } = useChat({
-        transport: new DefaultChatTransport({
-            api: 'api/agent'
-        })
-    });
+    const [transport] = useState(() => new DefaultChatTransport({
+        api: '/api/agent'
+    }));
+    const { messages, sendMessage } = useChat({ transport });
     const handleSubmit = (e:any) => {
         e.preventDefault();
         sendMessage({ text: input });
@@ -35,12 +34,12 @@ export function Chat({ onMessageReceived }: ChatProps) {
             sendMessage({ role: "user", parts: [{type: "text", text: questions[0]}] })
             answerQuestion();
         }
-    }, [questions]);
+    }, [questions, sendMessage, answerQuestion]);
 
     useEffect(() => {
         messageContainer.current?.scrollIntoView({ behavior: "smooth", block: "end", inline: "nearest" })
         if (onMessageReceived) onMessageReceived(messages);
-    }, [messages]);
+    }, [messages, onMessageReceived]);
 
     return (
         <div className="h-full flex flex-col bg-gray-700">

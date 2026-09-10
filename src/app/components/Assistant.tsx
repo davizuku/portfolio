@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { Chat } from "@/app/components/Chat"; // Import Chat component
 import { BotMessageSquareIcon, X } from "lucide-react";
 import { useAssistant } from "@/app/contexts/AssistantContext";
@@ -43,9 +43,9 @@ export default function Assistant({title}: AssistantProps) {
         }
     };
 
-    const onMessageReceived = (messages: UIMessage[]) => {
+    const onMessageReceived = useCallback((messages: UIMessage[]) => {
         setPendingMessages(messages);
-    }
+    }, []);
 
     useEffect(() => {
         if (wasOpened) {
