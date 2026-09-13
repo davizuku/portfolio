@@ -79,7 +79,7 @@ export default function Page() {
                     palette="primary"
                     exampleQuestions={[
                         "How many projects has David developed in PHP and Python?",
-                        "Tell me more about Javascript/Node projects.",
+                        "Tell me more about his Javascript, Typescript, or Node projects.",
                     ]}
                 />
                 <PortfolioSection
